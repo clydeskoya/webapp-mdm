@@ -11,7 +11,7 @@ interface LoginForm {
 }
 
 export default function LoginPage() {
-  const { login, isAuthenticated, isLoading, error, clearError } = useAuthStore();
+  const { login, isAuthenticated, isLoading, error, clearError, enableDevMode } = useAuthStore();
   const router = useRouter();
   const {
     register,
@@ -28,6 +28,10 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     clearError();
     await login(data.username, data.password);
+  };
+
+  const handleDevMode = () => {
+    enableDevMode();
   };
 
   return (
@@ -92,6 +96,22 @@ export default function LoginPage() {
             )}
           </button>
         </form>
+
+        {/* Development Mode Button */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <button
+              onClick={handleDevMode}
+              className="btn btn-secondary w-full text-sm"
+              type="button"
+            >
+              🔧 Modo Desenvolvimento (Bypass Login)
+            </button>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              Para testar sem autenticação real
+            </p>
+          </div>
+        )}
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
