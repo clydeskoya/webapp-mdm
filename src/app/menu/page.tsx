@@ -61,18 +61,29 @@ export default function MenuPage() {
                     </div>
                   </div>
                 </Link>
-              </div>
-              <div className={styles.quickActions}>
-                <Link href="" className={styles.actionLink}>
+                <Link href="/edit-data-model" className={styles.actionLink}>
                   <div className={styles.actionContent}>
                     <div className={styles.actionIcon}>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
                       </svg>
                     </div>
                     <div className={styles.actionText}>
-                      <h3>2 - Editar Modelo de Dados</h3>
+                      <h3>2 - Editar Modelos de Dados Existentes</h3>
                       <p>Selecione um dos modelos disponíveis e altere ou adicione recursos</p>
+                    </div>
+                  </div>
+                </Link>
+                <Link href="/edit-dataset-schema" className={styles.actionLink}>
+                  <div className={styles.actionContent}>
+                    <div className={styles.actionIcon}>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                      </svg>
+                    </div>
+                    <div className={styles.actionText}>
+                      <h3>3 - Editar Esquemas de Conjuntos de Dados</h3>
+                      <p>Modifique os esquemas de conjuntos de dados existentes</p>
                     </div>
                   </div>
                 </Link>
