@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth-store';
-import { submissionsAPI, Submission } from '@/lib/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './menu.module.css';
 
@@ -13,38 +12,6 @@ export default function MenuPage() {
 
   const handleLogout = () => {
     logout();
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-PT', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return styles.statusApproved;
-      case 'rejected':
-        return styles.statusRejected;
-      default:
-        return styles.statusPending;
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return 'Aprovado';
-      case 'rejected':
-        return 'Rejeitado';
-      default:
-        return 'Pendente';
-    }
   };
 
   return (

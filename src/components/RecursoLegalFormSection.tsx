@@ -52,7 +52,7 @@ export const RecursoLegalFormSection: React.FC<RecursoLegalFormSectionProps> = (
           className={styles.select}
         >
           <option value="">Selecione um tipo de acto jurídico</option>
-          {tiposActoJuridico.map((option: any) => (
+          {tiposActoJuridico.map((option: { key: string; value: string }) => (
             <option key={option.key} value={option.value}>
               {option.value}
             </option>

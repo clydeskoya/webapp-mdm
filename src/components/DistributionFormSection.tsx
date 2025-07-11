@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
 
 interface DistributionFormSectionProps {
@@ -13,7 +13,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
   distIndex,
   removeDistribution,
 }) => {
-  const { register, control, formState: { errors } } = useFormContext();
+  const { register, formState: { errors } } = useFormContext();
 
   return (
     <div className={styles.fieldArrayItem}>

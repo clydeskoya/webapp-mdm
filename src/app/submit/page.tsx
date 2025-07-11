@@ -9,6 +9,7 @@ import styles from './submit.module.css';
 import { DistributionFormSection } from '@/components/DistributionFormSection';
 import { AgentFormSection } from '@/components/AgentFormSection';
 import { RecursoLegalFormSection } from '@/components/RecursoLegalFormSection';
+import { dcatTemplate, DataType, EnumerationValue } from '@/lib/dcat-template';
 
 // Type Definitions
 type Distribution = {
@@ -79,8 +80,31 @@ type FormValues = {
   recursosLegais: RecursoLegal[];
 };
 
+interface DataElement {
+  id: string;
+  label: string;
+  description: string;
+  lastUpdated: string;
+  index: number;
+  dataType: DataType | undefined;
+  maxMultiplicity: number;
+  minMultiplicity: number;
+}
+
+interface DataClass {
+  id: string;
+  label: string;
+  description: string;
+  lastUpdated: string;
+  index: number;
+  maxMultiplicity: number;
+  minMultiplicity: number;
+  dataClasses: DataClass[];
+  dataElements: DataElement[];
+}
+
 // Helper to create a new Data Class
-const createDataClass = (label: string, description: string, multiplicity = { min: 0, max: -1 }) => ({
+const createDataClass = (label: string, description: string, multiplicity = { min: 0, max: -1 }): DataClass => ({
     id: crypto.randomUUID(),
     label,
     description,
@@ -95,11 +119,11 @@ const createDataClass = (label: string, description: string, multiplicity = { mi
 // Helper to create a new Data Element
 const createDataElement = (label: string, description: string, value: string, dataTypeLabel: string, multiplicity = { min: 0, max: 1 }) => {
     // Find the dataType from the template
-    const dataType = dcatTemplate.dataModel.dataTypes.find((dt: any) => dt.label === dataTypeLabel);
+    const dataType = dcatTemplate.dataModel.dataTypes.find((dt: DataType) => dt.label === dataTypeLabel);
     if (!dataType) {
         // Fallback to string if not found
         console.warn(`Data type "${dataTypeLabel}" not found. Falling back to "String".`);
-        const stringType = dcatTemplate.dataModel.dataTypes.find((dt: any) => dt.label === 'String');
+        const stringType = dcatTemplate.dataModel.dataTypes.find((dt: DataType) => dt.label === 'String');
         return {
             id: crypto.randomUUID(),
             label,
@@ -260,7 +284,7 @@ const DistributionsArray = ({ datasetIndex }: { datasetIndex: number }) => {
   );
 };
 
-const CollapsibleSection = ({ title, section, openSection, toggleSection, children }) => (
+const CollapsibleSection = ({ title, section, openSection, toggleSection, children }: { title: string, section: string, openSection: string | null, toggleSection: (section: string) => void, children: React.ReactNode }) => (
   <div className={styles.formSection}>
     <h2 className={styles.sectionTitle} onClick={() => toggleSection(section)}>
       {title}
@@ -271,7 +295,7 @@ const CollapsibleSection = ({ title, section, openSection, toggleSection, childr
   </div>
 );
 
-const CatalogueFormSection = ({ catalogueIndex, removeCatalogue, niveisAcesso, categorias }) => {
+const CatalogueFormSection = ({ catalogueIndex, removeCatalogue, niveisAcesso, categorias }: { catalogueIndex: number, removeCatalogue: (index: number) => void, niveisAcesso: EnumerationValue[], categorias: EnumerationValue[] }) => {
   const { control, register, formState: { errors } } = useFormContext();
 
   const { fields: datasetFields, append: appendDataset, remove: removeDataset } = useFieldArray({
@@ -423,7 +447,7 @@ const CatalogueFormSection = ({ catalogueIndex, removeCatalogue, niveisAcesso, c
                 className={styles.select}
               >
                 <option value="">Selecione um nível de acesso</option>
-                {niveisAcesso.map((option: any) => (
+                {niveisAcesso.map((option: EnumerationValue) => (
                   <option key={option.key} value={option.value}>
                     {option.value}
                   </option>
@@ -442,7 +466,7 @@ const CatalogueFormSection = ({ catalogueIndex, removeCatalogue, niveisAcesso, c
                 className={styles.select}
               >
                 <option value="">Selecione uma categoria</option>
-                {categorias.map((option: any) => (
+                {categorias.map((option: EnumerationValue) => (
                   <option key={option.key} value={option.value}>
                     {option.value}
                   </option>
@@ -617,7 +641,7 @@ const CatalogueFormSection = ({ catalogueIndex, removeCatalogue, niveisAcesso, c
                 className={styles.select}
               >
                 <option value="">Selecione um nível de acesso</option>
-                {niveisAcesso.map((option: any) => (
+                {niveisAcesso.map((option: EnumerationValue) => (
                   <option key={option.key} value={option.value}>
                     {option.value}
                   </option>
@@ -734,9 +758,9 @@ export default function SubmitPage() {
     name: 'recursosLegais',
   });
 
-  const niveisAcesso = dcatTemplate.dataModel.dataTypes.find((dt: any) => dt.label === 'Níveis_Acesso')?.enumerationValues || [];
-  const categorias = dcatTemplate.dataModel.dataTypes.find((dt: any) => dt.label === 'Categoria')?.enumerationValues || [];
-  const tiposActoJuridico = dcatTemplate.find((dt: any) => dt.label === 'Tipo_Acto_Jurídico')?.enumerationValues || [];
+  const niveisAcesso = dcatTemplate.dataModel.dataTypes.find((dt: DataType) => dt.label === 'Níveis_Acesso')?.enumerationValues || [];
+  const categorias = dcatTemplate.dataModel.dataTypes.find((dt: DataType) => dt.label === 'Categoria')?.enumerationValues || [];
+  const tiposActoJuridico = dcatTemplate.dataModel.dataTypes.find((dt: DataType) => dt.label === 'Tipo_Acto_Jurídico')?.enumerationValues || [];
 
   const toggleSection = (section: string) => {
     setOpenSection(openSection === section ? null : section);

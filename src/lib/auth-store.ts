@@ -27,7 +27,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       token: null,
       isAuthenticated: false,
@@ -49,10 +49,11 @@ export const useAuthStore = create<AuthState>()(
           });
           // Store token in localStorage for API requests
           localStorage.setItem('mdm_token', response.token);
-        } catch (error: any) {
+        } catch (error) {
+          const err = error as { response?: { data?: { message?: string } } };
           set({
             isLoading: false,
-            error: error.response?.data?.message || 'Erro ao iniciar sessão',
+            error: err.response?.data?.message || 'Erro ao iniciar sessão',
           });
         }
       },

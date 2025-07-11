@@ -52,7 +52,7 @@ export interface Submission {
   id: string;
   title: string;
   description: string;
-  data: any;
+  data: Record<string, unknown>;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
   updatedAt: string;
@@ -61,7 +61,7 @@ export interface Submission {
 export interface CreateSubmissionRequest {
   title: string;
   description: string;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 // Authentication API

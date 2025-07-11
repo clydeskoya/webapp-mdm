@@ -3,8 +3,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
-import Image from "next/image";
-import styles from "./page.module.css";
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuthStore();
