@@ -4,8 +4,12 @@ import { authAPI, LoginResponse } from './api';
 
 interface User {
   id: string;
-  username: string;
-  email: string;
+  emailAddress: string;
+  firstName?: string;
+  lastName?: string;
+  pending: boolean;
+  disabled: boolean;
+  createdBy: string;
 }
 
 interface AuthState {
@@ -16,9 +20,9 @@ interface AuthState {
   error: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (newUserData: Partial<User>) => void;
   clearError: () => void;
-  // Development mode - bypass authentication
-  enableDevMode: () => void;
+  
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -29,29 +33,13 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
-
+      
       login: async (username: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          // For development, bypass actual API call
-          if (process.env.NODE_ENV === 'development') {
-            // Simulate successful login
-            set({
-              user: {
-                id: 'dev-user-1',
-                username: username || 'dev-user',
-                email: 'dev@example.com',
-              },
-              token: 'dev-token-123',
-              isAuthenticated: true,
-              isLoading: false,
-              error: null,
-            });
-            localStorage.setItem('mdm_token', 'dev-token-123');
-            return;
-          }
-
           const response: LoginResponse = await authAPI.login(username, password);
+          // For debugging: you can log the user object from the API response
+          // console.log('User data from API during login:', response.user);
           set({
             user: response.user,
             token: response.token,
@@ -80,24 +68,18 @@ export const useAuthStore = create<AuthState>()(
         localStorage.removeItem('mdm_token');
       },
 
+      updateUser: (newUserData: Partial<User>) => {
+        set((state) => ({
+          ...state,
+          user: state.user ? { ...state.user, ...newUserData } : null,
+        }));
+      },
+
       clearError: () => {
         set({ error: null });
       },
 
-      enableDevMode: () => {
-        set({
-          user: {
-            id: 'dev-user-1',
-            username: 'Utilizador de Desenvolvimento',
-            email: 'dev@example.com',
-          },
-          token: 'dev-token-123',
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-        });
-        localStorage.setItem('mdm_token', 'dev-token-123');
-      },
+      
     }),
     {
       name: 'auth-storage',

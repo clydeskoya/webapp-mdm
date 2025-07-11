@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '@/lib/auth-store';
+import styles from './login.module.css';
 
 interface LoginForm {
   username: string;
@@ -11,7 +12,7 @@ interface LoginForm {
 }
 
 export default function LoginPage() {
-  const { login, isAuthenticated, isLoading, error, clearError, enableDevMode } = useAuthStore();
+  const { login, isAuthenticated, isLoading, error, clearError } = useAuthStore();
   const router = useRouter();
   const {
     register,
@@ -30,65 +31,63 @@ export default function LoginPage() {
     await login(data.username, data.password);
   };
 
-  const handleDevMode = () => {
-    enableDevMode();
-  };
+  
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="card w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Iniciar Sessão</h1>
-          <p className="text-gray-600 mt-2">Introduza as suas credenciais</p>
+    <div className={styles.loginContainer}>
+      <div className={styles.loginCard}>
+        <div className={styles.headerText}>
+          <h1 className={styles.headerTitle}>Iniciar Sessão</h1>
+          <p className={styles.headerSubtitle}>Introduza as suas credenciais</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="form-group">
-            <label htmlFor="username" className="form-label">
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.formSpaceY6}>
+          <div className={styles.formGroup}>
+            <label htmlFor="username" className={styles.formLabel}>
               Nome de Utilizador
             </label>
             <input
               id="username"
               type="text"
-              className={`form-input ${errors.username ? 'error' : ''}`}
+              className={`${styles.formInput} ${errors.username ? styles.error : ''}`}
               {...register('username', { required: 'Nome de utilizador é obrigatório' })}
               disabled={isLoading}
             />
             {errors.username && (
-              <p className="error-message">{errors.username.message}</p>
+              <p className={styles.errorMessage}>{errors.username.message}</p>
             )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.formLabel}>
               Palavra-passe
             </label>
             <input
               id="password"
               type="password"
-              className={`form-input ${errors.password ? 'error' : ''}`}
+              className={`${styles.formInput} ${errors.password ? styles.error : ''}`}
               {...register('password', { required: 'Palavra-passe é obrigatória' })}
               disabled={isLoading}
             />
             {errors.password && (
-              <p className="error-message">{errors.password.message}</p>
+              <p className={styles.errorMessage}>{errors.password.message}</p>
             )}
           </div>
 
           {error && (
-            <div className="error-message text-center">
+            <div className={`${styles.errorMessage} ${styles.textCenter}`}>
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            className="btn btn-primary w-full"
+            className={styles.submitButton}
             disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <div className="spinner mr-2"></div>
+                <div className={`${styles.spinner} ${styles.spinnerMr2}`}></div>
                 A iniciar sessão...
               </>
             ) : (
@@ -97,24 +96,10 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Development Mode Button */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <button
-              onClick={handleDevMode}
-              className="btn btn-secondary w-full text-sm"
-              type="button"
-            >
-              🔧 Modo Desenvolvimento (Bypass Login)
-            </button>
-            <p className="text-xs text-gray-500 text-center mt-2">
-              Para testar sem autenticação real
-            </p>
-          </div>
-        )}
+        
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className={`${styles.mt6} ${styles.textCenter}`}>
+          <p className={`${styles.textSm} ${styles.textGray600}`}>
             Sistema de Gestão de Dados Mauro
           </p>
         </div>

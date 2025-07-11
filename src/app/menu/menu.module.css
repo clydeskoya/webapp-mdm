@@ -1,12 +1,12 @@
 /* Menu Page Layout */
 .menuContainer {
   min-height: 100vh;
-  background-color: var(--background-color);
+  background-color: #f0f2f5;
 }
 
 /* Header Styles */
-.header {
-  background-color: var(--surface-color);
+.menuHeader {
+  background-color: #e0f2fe;
   box-shadow: var(--shadow);
   border-bottom: 1px solid var(--border-color);
 }
@@ -28,11 +28,12 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
+  text-shadow: none;
   margin: 0;
 }
 
 .headerSubtitle {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -55,13 +56,14 @@
 
 .logoutButton:hover {
   background-color: var(--background-color);
-  border-color: var(--primary-color);
+  border-color: var(--error-color);
   color: var(--primary-color);
 }
 
 .logoutIcon {
   width: 1.25rem;
   height: 1.25rem;
+  color: red;
 }
 
 /* Main Content */

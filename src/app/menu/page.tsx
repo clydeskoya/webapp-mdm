@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/auth-store';
 import { submissionsAPI, Submission } from '@/lib/api';
@@ -9,26 +9,7 @@ import styles from './menu.module.css';
 
 export default function MenuPage() {
   const { user, logout } = useAuthStore();
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadRecentSubmissions();
-  }, []);
-
-  const loadRecentSubmissions = async () => {
-    try {
-      setIsLoading(true);
-      const recentSubmissions = await submissionsAPI.getRecent(5);
-      setSubmissions(recentSubmissions);
-    } catch (err: any) {
-      setError('Erro ao carregar submissões recentes');
-      console.error('Error loading submissions:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  
 
   const handleLogout = () => {
     logout();
@@ -69,8 +50,7 @@ export default function MenuPage() {
   return (
     <ProtectedRoute>
       <div className={styles.menuContainer}>
-        {/* Header */}
-        <header className={styles.header}>
+        <div className={styles.menuHeader}>
           <div className={styles.headerContent}>
             <div className={styles.headerFlex}>
               <div>
@@ -78,7 +58,7 @@ export default function MenuPage() {
                   Sistema de Gestão de Dados Mauro
                 </h1>
                 <p className={styles.headerSubtitle}>
-                  Bem-vindo, {user?.username}
+                  Bem-vindo, {user?.firstName} {user?.lastName}
                 </p>
               </div>
               <button
@@ -87,12 +67,12 @@ export default function MenuPage() {
                 title="Terminar Sessão"
               >
                 <svg className={styles.logoutIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v10m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 2v10" />
                 </svg>
               </button>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* Main Content */}
         <main className={styles.mainContent}>
@@ -109,73 +89,30 @@ export default function MenuPage() {
                       </svg>
                     </div>
                     <div className={styles.actionText}>
-                      <h3>Submeter Novo Formulário</h3>
+                      <h3>1 - Submeter Novo Modelo de Dados</h3>
                       <p>Criar uma nova submissão de dados</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+              <div className={styles.quickActions}>
+                <Link href="" className={styles.actionLink}>
+                  <div className={styles.actionContent}>
+                    <div className={styles.actionIcon}>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <div className={styles.actionText}>
+                      <h3>2 - Editar Modelo de Dados</h3>
+                      <p>Selecione um dos modelos disponíveis e altere ou adicione recursos</p>
                     </div>
                   </div>
                 </Link>
               </div>
             </div>
 
-            {/* Recent Submissions */}
-            <div className={styles.card}>
-              <div className={styles.submissionsHeader}>
-                <h2 className={styles.cardTitle}>Submissões Recentes</h2>
-                <button
-                  onClick={loadRecentSubmissions}
-                  className={styles.refreshButton}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'A carregar...' : 'Atualizar'}
-                </button>
-              </div>
-
-              {error && (
-                <div className={styles.errorMessage}>
-                  {error}
-                </div>
-              )}
-
-              {isLoading ? (
-                <div className={styles.loadingContainer}>
-                  <div className={styles.spinner}></div>
-                  <span>A carregar submissões...</span>
-                </div>
-              ) : submissions.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p>Nenhuma submissão encontrada</p>
-                </div>
-              ) : (
-                <div className={styles.submissionsList}>
-                  {submissions.map((submission) => (
-                    <div
-                      key={submission.id}
-                      className={styles.submissionItem}
-                    >
-                      <div className={styles.submissionHeader}>
-                        <h3 className={styles.submissionTitle}>
-                          {submission.title}
-                        </h3>
-                        <span
-                          className={`${styles.submissionStatus} ${getStatusClass(submission.status)}`}
-                        >
-                          {getStatusText(submission.status)}
-                        </span>
-                      </div>
-                      <p className={styles.submissionDescription}>
-                        {submission.description}
-                      </p>
-                      <p className={styles.submissionDate}>
-                        Criado em: {formatDate(submission.createdAt)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            
           </div>
         </main>
       </div>
