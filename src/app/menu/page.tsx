@@ -90,7 +90,83 @@ export default function MenuPage() {
               </div>
             </div>
 
+            {/* Recent Catalogs, Datasets, and Data Models */}
+            <div className={styles.card}>
+              <div className={styles.submissionsHeader}>
+                <h2 className={styles.cardTitle}>Recentes</h2>
+                <button className={styles.refreshButton}>Atualizar</button>
+              </div>
+              <div className={styles.submissionsList}>
+                {/* Mock Data for Catalogs */}
+                <div className={styles.submissionItem}>
+                  <div className={styles.submissionHeader}>
+                    <h3 className={styles.submissionTitle}>Catálogo de Dados Abertos</h3>
+                    <span className={`${styles.submissionStatus} ${styles.statusApproved}`}>Catálogo</span>
+                  </div>
+                  <p className={styles.submissionDescription}>Catálogo principal de dados abertos da cidade.</p>
+                  <p className={styles.submissionDate}>Última atualização: 2024-07-10</p>
+                </div>
+                {/* Mock Data for Datasets */}
+                <div className={styles.submissionItem}>
+                  <div className={styles.submissionHeader}>
+                    <h3 className={styles.submissionTitle}>População por Freguesia 2023</h3>
+                    <span className={`${styles.submissionStatus} ${styles.statusPending}`}>Dataset</span>
+                  </div>
+                  <p className={styles.submissionDescription}>Dados demográficos detalhados por freguesia.</p>
+                  <p className={styles.submissionDate}>Última atualização: 2024-06-25</p>
+                </div>
+                {/* Mock Data for Data Models */}
+                <div className={styles.submissionItem}>
+                  <div className={styles.submissionHeader}>
+                    <h3 className={styles.submissionTitle}>Modelo de Dados de Transportes Públicos</h3>
+                    <span className={`${styles.submissionStatus} ${styles.statusRejected}`}>Modelo de Dados</span>
+                  </div>
+                  <p className={styles.submissionDescription}>Estrutura de dados para informações de transportes.</p>
+                  <p className={styles.submissionDate}>Última atualização: 2024-07-01</p>
+                </div>
+              </div>
+            </div>
+
             
+          </div>
+
+          {/* Browse by Type */}
+          <div className={styles.browseByType}>
+            <h2 className={styles.cardTitle}>Navegar por Tipo</h2>
+            <div className={styles.typeIcons}>
+              <Link href="/catalogs" className={styles.typeIconLink}>
+                <div className={styles.typeIconContent}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H7a2 2 0 00-2 2v2m7-7V3" />
+                  </svg>
+                  <span>Catálogo</span>
+                </div>
+              </Link>
+              <Link href="/datasets" className={styles.typeIconLink}>
+                <div className={styles.typeIconContent}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                  <span>Dataset</span>
+                </div>
+              </Link>
+              <Link href="/data-services" className={styles.typeIconLink}>
+                <div className={styles.typeIconContent}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>Serviço de Dados</span>
+                </div>
+              </Link>
+              <Link href="/agents" className={styles.typeIconLink}>
+                <div className={styles.typeIconContent}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span>Agente</span>
+                </div>
+              </Link>
+            </div>
           </div>
         </main>
       </div>
