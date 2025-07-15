@@ -127,6 +127,11 @@ export const modelsAPI = {
     const response = await api.get(`/dataModels/${id}`);
     return response.data;
   },
+
+  createDataModel: async (data: { label: string; description: string; organisation: string }) => {
+    const response = await api.post('/dataModels', data);
+    return response.data;
+  },
 };
 
 export default api; 

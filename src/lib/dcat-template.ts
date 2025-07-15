@@ -10,11 +10,15 @@ export interface DataType {
 
 export const dcatTemplate: {
   dataModel: {
+    label: string;
+    description: string;
     dataTypes: DataType[];
     childDataClasses: unknown[];
   };
 } = {
   dataModel: {
+    label: '',
+    description: '',
     dataTypes: [
       {
         label: 'Níveis_Acesso',
