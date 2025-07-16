@@ -1,14 +1,19 @@
 
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FieldErrors } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
+import { FormValues } from '@/app/submit/page';
 
 interface DataModelFormSectionProps {
-  agents: { name: string }[];
+  disabled?: boolean;
 }
 
-export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ agents }) => {
-  const { register, formState: { errors } } = useFormContext();
+export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ disabled }) => {
+  const { register, formState, getFieldState } = useFormContext<FormValues>();
+
+  const labelError = getFieldState('dataModel.label', formState).error;
+  const descriptionError = getFieldState('dataModel.description', formState).error;
+  const organizationError = getFieldState('dataModel.organization', formState).error;
 
   return (
     <div className={styles.formSection}>
@@ -19,11 +24,12 @@ export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ agen
         </label>
         <input
           id="label"
-          {...register('label', { required: 'Label is required' })}
+          {...register('dataModel.label', { required: !disabled && 'Label is required' })}
           className={styles.input}
           placeholder="e.g., My Awesome Data Model"
+          disabled={disabled}
         />
-        {errors.label && <p className={styles.errorMessage}>{errors.label.message}</p>}
+        {labelError && <p className={styles.errorMessage}>{labelError.message}</p>}
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="description" className={styles.label}>
@@ -31,30 +37,26 @@ export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ agen
         </label>
         <textarea
           id="description"
-          {...register('description', { required: 'Description is required' })}
+          {...register('dataModel.description', { required: !disabled && 'Description is required' })}
           className={styles.input}
           placeholder="e.g., A description of my awesome data model."
           rows={4}
+          disabled={disabled}
         />
-        {errors.description && <p className={styles.errorMessage}>{errors.description.message}</p>}
+        {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="organization" className={styles.label}>
           Organization
         </label>
-        <select
+        <input
           id="organization"
-          {...register('organization', { required: 'Organization is required' })}
-          className={styles.select}
-        >
-          <option value="">Select an organization</option>
-          {agents.map((agent, index) => (
-            <option key={index} value={agent.name}>
-              {agent.name}
-            </option>
-          ))}
-        </select>
-        {errors.organization && <p className={styles.errorMessage}>{errors.organization.message}</p>}
+          {...register('dataModel.organization', { required: !disabled && 'Organization is required' })}
+          className={styles.input}
+          placeholder="e.g., My Organization"
+          disabled={disabled}
+        />
+        {organizationError && <p className={styles.errorMessage}>{organizationError.message}</p>}
       </div>
     </div>
   );

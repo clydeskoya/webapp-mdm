@@ -1,10 +1,13 @@
 import React from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFormContext, useFieldArray, FieldErrors, Path } from 'react-hook-form';
 import { ContactFormSection } from './ContactFormSection';
 import styles from '@/app/submit/submit.module.css';
+import { FormValues } from '@/app/submit/page';
+
+type RecursoLegalAgentsPath = `recursosLegais.${number}.agents`;
 
 interface AgentFormSectionProps {
-  parentFieldName: string;
+  parentFieldName: RecursoLegalAgentsPath;
   agentIndex: number;
   removeAgent: (index: number) => void;
 }
@@ -14,12 +17,24 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({
   agentIndex,
   removeAgent,
 }) => {
-  const { register, control, formState: { errors } } = useFormContext();
+  const { register, control, formState, getFieldState } = useFormContext<FormValues>();
+
+  const contactsFieldName = `${parentFieldName}.${agentIndex}.contacts` as Path<FormValues>;
 
   const { fields: contactFields, append: appendContact, remove: removeContact } = useFieldArray({
     control,
-    name: `${parentFieldName}.${agentIndex}.contacts` as const,
+    name: contactsFieldName,
   });
+
+  const nameFieldName = `${parentFieldName}.${agentIndex}.name` as Path<FormValues>;
+  const descriptionFieldName = `${parentFieldName}.${agentIndex}.description` as Path<FormValues>;
+  const urlFieldName = `${parentFieldName}.${agentIndex}.url` as Path<FormValues>;
+  const idFieldName = `${parentFieldName}.${agentIndex}.id` as Path<FormValues>;
+
+  const nameError = getFieldState(nameFieldName, formState).error;
+  const descriptionError = getFieldState(descriptionFieldName, formState).error;
+  const urlError = getFieldState(urlFieldName, formState).error;
+  const idError = getFieldState(idFieldName, formState).error;
 
   return (
     <div className={styles.fieldArrayItem}>
@@ -30,57 +45,57 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({
         </button>
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${agentIndex}.name`} className={styles.label}>
+        <label htmlFor={nameFieldName} className={styles.label}>
           Nome do Agente
         </label>
         <input
-          id={`${parentFieldName}.${agentIndex}.name`}
-          {...register(`${parentFieldName}.${agentIndex}.name` as const, { required: 'O nome do agente é obrigatório' })}
+          id={nameFieldName}
+          {...register(nameFieldName, { required: 'O nome do agente é obrigatório' })}
           className={styles.input}
           placeholder="Ex: João Silva / Câmara Municipal de Lisboa"
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][agentIndex] && errors[parentFieldName][agentIndex].name && <p className={styles.errorMessage}>{errors[parentFieldName][agentIndex].name.message}</p>}
+        {nameError && <p className={styles.errorMessage}>{nameError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${agentIndex}.description`} className={styles.label}>
+        <label htmlFor={descriptionFieldName} className={styles.label}>
           Descrição do Agente
         </label>
         <textarea
-          id={`${parentFieldName}.${agentIndex}.description`}
-          {...register(`${parentFieldName}.${agentIndex}.description` as const, { required: 'A descrição do agente é obrigatória' })}
+          id={descriptionFieldName}
+          {...register(descriptionFieldName, { required: 'A descrição do agente é obrigatória' })}
           className={styles.input}
           placeholder="Ex: Departamento responsável pela gestão de dados."
           rows={4}
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][agentIndex] && errors[parentFieldName][agentIndex].description && <p className={styles.errorMessage}>{errors[parentFieldName][agentIndex].description.message}</p>}
+        {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${agentIndex}.url`} className={styles.label}>
+        <label htmlFor={urlFieldName} className={styles.label}>
           URL do Agente
         </label>
         <input
-          id={`${parentFieldName}.${agentIndex}.url`}
+          id={urlFieldName}
           type="url"
-          {...register(`${parentFieldName}.${agentIndex}.url` as const)}
+          {...register(urlFieldName)}
           className={styles.input}
           placeholder="Ex: https://www.cm-lisboa.pt"
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][agentIndex] && errors[parentFieldName][agentIndex].url && <p className={styles.errorMessage}>{errors[parentFieldName][agentIndex].url.message}</p>}
+        {urlError && <p className={styles.errorMessage}>{urlError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${agentIndex}.id`} className={styles.label}>
+        <label htmlFor={idFieldName} className={styles.label}>
           ID do Agente
         </label>
         <input
-          id={`${parentFieldName}.${agentIndex}.id`}
-          {...register(`${parentFieldName}.${agentIndex}.id` as const)}
+          id={idFieldName}
+          {...register(idFieldName)}
           className={styles.input}
           placeholder="Ex: agente-001"
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][agentIndex] && errors[parentFieldName][agentIndex].id && <p className={styles.errorMessage}>{errors[parentFieldName][agentIndex].id.message}</p>}
+        {idError && <p className={styles.errorMessage}>{idError.message}</p>}
       </div>
 
       <div className={styles.formSection}>
@@ -91,7 +106,7 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({
         {contactFields.map((contactField, contactInnerIndex) => (
           <ContactFormSection
             key={contactField.id}
-            parentFieldName={`${parentFieldName}.${agentIndex}.contacts`}
+            parentFieldName={contactsFieldName}
             contactIndex={contactInnerIndex}
             removeContact={removeContact}
           />

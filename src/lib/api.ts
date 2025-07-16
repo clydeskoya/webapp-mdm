@@ -1,22 +1,14 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
 // Configuration for Mauro Data Mapper API
-const API_BASE_URL = process.env.NEXT_PUBLIC_MDM_API_URL || 'https://catalogo-metadados-pdun.dev.ic.ama.lan/api';
+const API_BASE_URL = '/api/mdm';
 // Create axios instance with default configuration
 const api = axios.create({
   baseURL: `${API_BASE_URL}`,
   headers: {
     'Content-Type': 'application/json',
   },
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('mdm_token');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  withCredentials: true, // This is crucial for sending cookies with requests
 });
 
 // Response interceptor to handle errors
@@ -24,8 +16,7 @@ api.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      localStorage.removeItem('mdm_token');
+      // Redirect to login on 401
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -36,17 +27,14 @@ api.interceptors.response.use(
 
 // Types for API responses
 export interface LoginResponse {
-  token: string;
-  user: {
-    id: string;
-    emailAddress: string;
-    firstName?: string;
-    lastName?: string;
-    pending: boolean;
-    disabled: boolean;
-    createdBy: string;
-  };
-}
+  id: string;
+  emailAddress: string;
+  firstName?: string;
+  lastName?: string;
+  pending: boolean;
+  disabled: boolean;
+  createdBy: string;
+};
 
 export interface Submission {
   id: string;
@@ -73,7 +61,6 @@ export const authAPI = {
 
   logout: async (): Promise<void> => {
     await api.post('/authentication/logout');
-    localStorage.removeItem('mdm_token');
   },
 
   getCurrentUser: async () => {
@@ -119,6 +106,12 @@ export const modelsAPI = {
   // Get available data models
   getAll: async () => {
     const response = await api.get('/dataModels');
+    return response.data;
+  },
+
+  // Get data models from a specific folder
+  getFromFolder: async (folderId: string) => {
+    const response = await api.get(`/folders/${folderId}/dataModels`);
     return response.data;
   },
 

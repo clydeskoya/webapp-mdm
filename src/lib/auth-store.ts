@@ -14,7 +14,6 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -29,7 +28,6 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -41,14 +39,11 @@ export const useAuthStore = create<AuthState>()(
           // For debugging: you can log the user object from the API response
           // console.log('User data from API during login:', response.user);
           set({
-            user: response.user,
-            token: response.token,
+            user: response,
             isAuthenticated: true,
             isLoading: false,
             error: null,
           });
-          // Store token in localStorage for API requests
-          localStorage.setItem('mdm_token', response.token);
         } catch (error) {
           const err = error as { response?: { data?: { message?: string } } };
           set({
@@ -58,15 +53,23 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
-        localStorage.removeItem('mdm_token');
+      logout: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          await authAPI.logout();
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+          });
+        } catch (error) {
+          const err = error as { response?: { data?: { message?: string } } };
+          set({
+            isLoading: false,
+            error: err.response?.data?.message || 'Erro ao terminar sessão',
+          });
+        }
       },
 
       updateUser: (newUserData: Partial<User>) => {
@@ -86,7 +89,6 @@ export const useAuthStore = create<AuthState>()(
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
-        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }

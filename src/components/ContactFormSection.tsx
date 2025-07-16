@@ -1,9 +1,11 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FieldErrors, Path } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
+import { FormValues } from '@/app/submit/page';
+
+type AgentContactsPath = `recursosLegais.${number}.agents.${number}.contacts`;
 
 interface ContactFormSectionProps {
-  parentFieldName: string;
+  parentFieldName: `recursosLegais.${number}.agents.${number}.contacts`;
   contactIndex: number;
   removeContact: (index: number) => void;
 }
@@ -13,7 +15,13 @@ export const ContactFormSection: React.FC<ContactFormSectionProps> = ({
   contactIndex,
   removeContact,
 }) => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, formState, getFieldState } = useFormContext<FormValues>();
+
+  const mailFieldName = `${parentFieldName}.${contactIndex}.mail` as Path<FormValues>;
+  const phoneFieldName = `${parentFieldName}.${contactIndex}.phone` as Path<FormValues>;
+
+  const mailError = getFieldState(mailFieldName, formState).error;
+  const phoneError = getFieldState(phoneFieldName, formState).error;
 
   return (
     <div className={styles.fieldArrayItem}>
@@ -24,31 +32,31 @@ export const ContactFormSection: React.FC<ContactFormSectionProps> = ({
         </button>
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${contactIndex}.mail`} className={styles.label}>
+        <label htmlFor={mailFieldName} className={styles.label}>
           Email
         </label>
         <input
-          id={`${parentFieldName}.${contactIndex}.mail`}
+          id={mailFieldName}
           type="email"
-          {...register(`${parentFieldName}.${contactIndex}.mail` as const)}
+          {...register(mailFieldName)}
           className={styles.input}
           placeholder="Ex: contacto@cm-lisboa.pt"
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][contactIndex] && errors[parentFieldName][contactIndex].mail && <p className={styles.errorMessage}>{errors[parentFieldName][contactIndex].mail.message}</p>}
+        {mailError && <p className={styles.errorMessage}>{mailError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor={`${parentFieldName}.${contactIndex}.phone`} className={styles.label}>
+        <label htmlFor={phoneFieldName} className={styles.label}>
           Telefone
         </label>
         <input
-          id={`${parentFieldName}.${contactIndex}.phone`}
+          id={phoneFieldName}
           type="tel"
-          {...register(`${parentFieldName}.${contactIndex}.phone` as const)}
+          {...register(phoneFieldName)}
           className={styles.input}
           placeholder="Ex: +351 21 123 4567"
         />
-        {errors && errors[parentFieldName] && errors[parentFieldName][contactIndex] && errors[parentFieldName][contactIndex].phone && <p className={styles.errorMessage}>{errors[parentFieldName][contactIndex].phone.message}</p>}
+        {phoneError && <p className={styles.errorMessage}>{phoneError.message}</p>}
       </div>
     </div>
   );

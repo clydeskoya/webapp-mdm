@@ -1,7 +1,7 @@
-import React from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFormContext, useFieldArray, FieldErrors } from 'react-hook-form';
 import { AgentFormSection } from './AgentFormSection';
 import styles from '@/app/submit/submit.module.css';
+import { FormValues } from '@/app/submit/page';
 
 interface RecursoLegalFormSectionProps {
   recursoLegalIndex: number;
@@ -14,12 +14,15 @@ export const RecursoLegalFormSection: React.FC<RecursoLegalFormSectionProps> = (
   removeRecursoLegal,
   tiposActoJuridico,
 }) => {
-  const { register, control, formState: { errors } } = useFormContext();
+  const { register, control, formState, getFieldState } = useFormContext<FormValues>();
 
   const { fields: nestedAgentFields, append: appendNestedAgent, remove: removeNestedAgent } = useFieldArray({
     control,
     name: `recursosLegais.${recursoLegalIndex}.agents` as const,
   });
+
+  const jurisdictionError = getFieldState(`recursosLegais.${recursoLegalIndex}.jurisdiction`, formState).error;
+  const legalActError = getFieldState(`recursosLegais.${recursoLegalIndex}.legalAct`, formState).error;
 
   return (
     <div className={styles.fieldArrayItem}>
@@ -39,7 +42,7 @@ export const RecursoLegalFormSection: React.FC<RecursoLegalFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: PT, EU"
         />
-        {errors.recursosLegais?.[recursoLegalIndex]?.jurisdiction && <p className={styles.errorMessage}>{errors.recursosLegais[recursoLegalIndex].jurisdiction.message}</p>}
+        {jurisdictionError && <p className={styles.errorMessage}>{jurisdictionError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -58,7 +61,7 @@ export const RecursoLegalFormSection: React.FC<RecursoLegalFormSectionProps> = (
             </option>
           ))}
         </select>
-        {errors.recursosLegais?.[recursoLegalIndex]?.legalAct && <p className={styles.errorMessage}>{errors.recursosLegais[recursoLegalIndex].legalAct.message}</p>}
+        {legalActError && <p className={styles.errorMessage}>{legalActError.message}</p>}
       </div>
 
       <div className={styles.formSection}>

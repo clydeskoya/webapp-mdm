@@ -1,29 +1,71 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import { useForm, SubmitHandler, FormProvider, FieldErrors } from 'react-hook-form';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './submit.module.css';
 import { DataModelFormSection } from '@/components/DataModelFormSection';
 import { modelsAPI } from '@/lib/api';
 
 // Type Definitions
+type Contact = {
+  mail: string;
+  phone: string;
+};
+
+type Agent = {
+  name: string;
+  description: string;
+  url: string;
+  id: string;
+  contacts: Contact[];
+};
+
+type RecursoLegal = {
+  jurisdiction: string;
+  legalAct: string;
+  agents: Agent[];
+};
+
+type Distribution = {
+  title: string;
+  description: string;
+  license: string;
+  format: string;
+  modified: string;
+  created: string;
+  accessURL: string;
+  downloadURL: string;
+};
+
+type Dataset = {
+  title: string;
+  description: string;
+  distributions: Distribution[];
+};
+
 type DataModel = {
   label: string;
   description: string;
   organization: string;
 };
 
-type FormValues = {
+export type FormValues = {
   dataModel: DataModel;
+  existingDataModel: string;
+  submissionType: 'existing' | 'new';
+  recursosLegais: RecursoLegal[];
+  datasets: Dataset[];
 };
 
 export default function SubmitPage() {
   const router = useRouter();
+  const [dataModels, setDataModels] = useState<any[]>([]);
 
   const methods = useForm<FormValues>({
     defaultValues: {
+      submissionType: 'new',
       dataModel: {
         label: '',
         description: '',
@@ -33,21 +75,41 @@ export default function SubmitPage() {
   });
 
   const { handleSubmit, watch } = methods;
-  const agents = watch('dataModel.organization');
+  const submissionType = watch('submissionType');
+
+  useEffect(() => {
+    async function fetchDataModels() {
+      try {
+        const response = await modelsAPI.getFromFolder('b996196b-5a50-41f8-9b09-94ee30070686');
+        console.log('API Response for data models:', response);
+        setDataModels(response.items);
+      } catch (error) {
+        console.error('Failed to fetch data models:', error);
+      }
+    }
+
+    fetchDataModels();
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      const response = await modelsAPI.createDataModel({
-        label: data.dataModel.label,
-        description: data.dataModel.description,
-        organisation: data.dataModel.organization,
-      });
-      console.log('Data model created:', response);
-      // Optionally, redirect to another page or show a success message
+      let response;
+      if (data.submissionType === 'new') {
+        response = await modelsAPI.createDataModel({
+          label: data.dataModel.label,
+          description: data.dataModel.description,
+          organisation: data.dataModel.organization,
+        });
+      } else {
+        // Handle submission for existing data model
+        console.log('Submitting existing data model:', data.existingDataModel);
+        // You might want to fetch the selected data model and do something with it
+        response = await modelsAPI.getById(data.existingDataModel);
+      }
+      console.log('Data model processed:', response);
       router.push('/menu');
     } catch (error) {
-      console.error('Failed to create data model:', error);
-      // Handle error (e.g., show an error message)
+      console.error('Failed to process data model:', error);
     }
   };
 
@@ -66,17 +128,59 @@ export default function SubmitPage() {
         <header className={styles.header}>
           <h1 className={styles.title}>Submeter Novo Formulário</h1>
           <p className={styles.subtitle}>
-            Preencha os campos para criar um novo modelo de dados.
+            Preencha os campos para criar um novo modelo de dados ou selecione um modelo existente.
           </p>
         </header>
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-            <DataModelFormSection agents={[{ name: 'Agent 1' }, { name: 'Agent 2' }]} />
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Tipo de Submissão</label>
+              <div className={styles.radioGroup}>
+                <label>
+                  <input
+                    type="radio"
+                    value="new"
+                    {...methods.register('submissionType')}
+                  />
+                  Novo Modelo de Dados
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="existing"
+                    {...methods.register('submissionType')}
+                  />
+                  Modelo de Dados Existente
+                </label>
+              </div>
+            </div>
+
+            {submissionType === 'existing' && (
+              <div className={styles.formGroup}>
+                <label htmlFor="existingDataModel" className={styles.label}>
+                  Modelos de Dados Existentes
+                </label>
+                <select
+                  id="existingDataModel"
+                  {...methods.register('existingDataModel')}
+                  className={styles.select}
+                >
+                  <option value="">Selecione um modelo de dados</option>
+                  {dataModels.map((model) => (
+                    <option key={model.id} value={model.id}>
+                      {model.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <DataModelFormSection disabled={submissionType === 'existing'} />
 
             <div className={styles.formActions}>
               <button type="submit" className={styles.submitButton}>
-                Criar Modelo de Dados
+                {submissionType === 'new' ? 'Criar Modelo de Dados' : 'Submeter'}
               </button>
             </div>
           </form>
@@ -85,3 +189,4 @@ export default function SubmitPage() {
     </ProtectedRoute>
   );
 }
+

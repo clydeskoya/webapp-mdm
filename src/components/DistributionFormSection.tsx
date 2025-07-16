@@ -1,6 +1,7 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FieldErrors } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
+import { FormValues } from '@/app/submit/page';
 
 interface DistributionFormSectionProps {
   datasetIndex: number;
@@ -13,7 +14,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
   distIndex,
   removeDistribution,
 }) => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, formState, getFieldState } = useFormContext<FormValues>();
 
   return (
     <div className={styles.fieldArrayItem}>
@@ -33,7 +34,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: Dados de População em CSV"
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.title && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].title.message}</p>}
+        {titleError && <p className={styles.errorMessage}>{titleError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -47,7 +48,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           placeholder="Ex: Ficheiro CSV contendo dados demográficos."
           rows={4}
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.description && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].description.message}</p>}
+        {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -60,7 +61,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: Creative Commons Zero v1.0 Universal"
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.license && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].license.message}</p>}
+        {licenseError && <p className={styles.errorMessage}>{licenseError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -73,7 +74,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: CSV, JSON, XML"
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.format && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].format.message}</p>}
+        {formatError && <p className={styles.errorMessage}>{formatError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -86,7 +87,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           {...register(`datasets.${datasetIndex}.distributions.${distIndex}.modified` as const, { required: 'A data de modificação da distribuição é obrigatória' })}
           className={styles.input}
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.modified && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].modified.message}</p>}
+        {modifiedError && <p className={styles.errorMessage}>{modifiedError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -99,7 +100,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           {...register(`datasets.${datasetIndex}.distributions.${distIndex}.created` as const)}
           className={styles.input}
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.created && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].created.message}</p>}
+        {createdError && <p className={styles.errorMessage}>{createdError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -113,7 +114,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: https://dados.gov.pt/dataset/populacao/distribuicao/csv"
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.accessURL && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].accessURL.message}</p>}
+        {accessURLError && <p className={styles.errorMessage}>{accessURLError.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -127,7 +128,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           className={styles.input}
           placeholder="Ex: https://dados.gov.pt/dataset/populacao/distribuicao/csv/download"
         />
-        {errors.datasets?.[datasetIndex]?.distributions?.[distIndex]?.downloadURL && <p className={styles.errorMessage}>{errors.datasets[datasetIndex].distributions[distIndex].downloadURL.message}</p>}
+        {downloadURLError && <p className={styles.errorMessage}>{downloadURLError.message}</p>}
       </div>
     </div>
   );
