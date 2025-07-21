@@ -121,8 +121,8 @@ export const modelsAPI = {
     return response.data;
   },
 
-  createDataModel: async (data: { label: string; description: string; organisation: string }) => {
-    const response = await api.post('/dataModels', data);
+  createDataModel: async (folderId: string, data: { label: string; description: string; author: string; organisation: string; type:string}) => {
+    const response = await api.post(`/folders/${folderId}/dataModels`, data);
     return response.data;
   },
 };

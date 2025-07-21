@@ -6,6 +6,7 @@ import { useForm, SubmitHandler, FormProvider, FieldErrors } from 'react-hook-fo
 import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './submit.module.css';
 import { DataModelFormSection } from '@/components/DataModelFormSection';
+import { useAuthStore } from '@/lib/auth-store';
 import { modelsAPI } from '@/lib/api';
 
 // Type Definitions
@@ -48,7 +49,9 @@ type Dataset = {
 type DataModel = {
   label: string;
   description: string;
-  organization: string;
+  author: string;
+  organisation: string;
+  type: string;
 };
 
 export type FormValues = {
@@ -60,6 +63,7 @@ export type FormValues = {
 };
 
 export default function SubmitPage() {
+  const { user } = useAuthStore();
   const router = useRouter();
   const [dataModels, setDataModels] = useState<any[]>([]);
 
@@ -69,7 +73,9 @@ export default function SubmitPage() {
       dataModel: {
         label: '',
         description: '',
-        organization: '',
+        organisation:'',
+        author: '',
+        type:'',
       },
     },
   });
@@ -80,7 +86,12 @@ export default function SubmitPage() {
   useEffect(() => {
     async function fetchDataModels() {
       try {
-        const response = await modelsAPI.getFromFolder('b996196b-5a50-41f8-9b09-94ee30070686');
+        const folderId = process.env.NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID;
+        if (!folderId) {
+          console.error('NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID is not defined');
+          return;
+        }
+        const response = await modelsAPI.getFromFolder(folderId);
         console.log('API Response for data models:', response);
         setDataModels(response.items);
       } catch (error) {
@@ -95,15 +106,20 @@ export default function SubmitPage() {
     try {
       let response;
       if (data.submissionType === 'new') {
-        response = await modelsAPI.createDataModel({
+        const folderId = process.env.NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID;
+        if (!folderId) {
+          console.error('NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID is not defined');
+          return;
+        }
+        response = await modelsAPI.createDataModel(folderId, {
           label: data.dataModel.label,
           description: data.dataModel.description,
-          organisation: data.dataModel.organization,
+          organisation: data.dataModel.label,
+          author: `${user?.firstName} ${user?.lastName}`,
+          type: "Data Asset",
         });
       } else {
-        // Handle submission for existing data model
-        console.log('Submitting existing data model:', data.existingDataModel);
-        // You might want to fetch the selected data model and do something with it
+
         response = await modelsAPI.getById(data.existingDataModel);
       }
       console.log('Data model processed:', response);

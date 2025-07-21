@@ -13,7 +13,7 @@ export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ disa
 
   const labelError = getFieldState('dataModel.label', formState).error;
   const descriptionError = getFieldState('dataModel.description', formState).error;
-  const organizationError = getFieldState('dataModel.organization', formState).error;
+  const organizationError = getFieldState('dataModel.organisation', formState).error;
 
   return (
     <div className={styles.formSection}>
@@ -46,14 +46,14 @@ export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ disa
         {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="organization" className={styles.label}>
-          Organization
+        <label htmlFor="organisation" className={styles.label}>
+          Organisation
         </label>
         <input
-          id="organization"
-          {...register('dataModel.organization', { required: !disabled && 'Organization is required' })}
+          id="organisation"
+          {...register('dataModel.organisation', { required: !disabled && 'Organisation is required' })}
           className={styles.input}
-          placeholder="e.g., My Organization"
+          placeholder="e.g., My Organisation"
           disabled={disabled}
         />
         {organizationError && <p className={styles.errorMessage}>{organizationError.message}</p>}
