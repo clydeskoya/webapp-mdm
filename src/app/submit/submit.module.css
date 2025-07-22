@@ -221,3 +221,30 @@
   width: 1.5rem;
   height: 1.5rem;
 }
+
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+}
+
+.popup.success {
+  background-color: #4CAF50;
+}
+
+.popup.error {
+  background-color: #f44336;
+}
+
+.popup button {
+  margin-left: 15px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}

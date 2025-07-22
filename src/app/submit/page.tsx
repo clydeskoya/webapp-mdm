@@ -102,30 +102,28 @@ export default function SubmitPage() {
     fetchDataModels();
   }, []);
 
+  const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       let response;
       if (data.submissionType === 'new') {
         const folderId = process.env.NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID;
         if (!folderId) {
-          console.error('NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID is not defined');
+          setPopup({ message: 'Folder ID is not configured.', type: 'error' });
           return;
         }
         response = await modelsAPI.createDataModel(folderId, {
           label: data.dataModel.label,
           description: data.dataModel.description,
-          organisation: data.dataModel.label,
           author: `${user?.firstName} ${user?.lastName}`,
-          type: "Data Asset",
         });
       } else {
-
         response = await modelsAPI.getById(data.existingDataModel);
       }
-      console.log('Data model processed:', response);
-      router.push('/menu');
+      setPopup({ message: 'Data model processed successfully!', type: 'success' });
     } catch (error) {
-      console.error('Failed to process data model:', error);
+      setPopup({ message: 'Failed to process data model. Please try again.', type: 'error' });
     }
   };
 
@@ -201,6 +199,13 @@ export default function SubmitPage() {
             </div>
           </form>
         </FormProvider>
+
+        {popup && (
+          <div className={`${styles.popup} ${styles[popup.type]}`}>
+            <p>{popup.message}</p>
+            <button onClick={() => setPopup(null)}>Close</button>
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );
