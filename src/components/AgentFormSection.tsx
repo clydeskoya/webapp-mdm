@@ -1,120 +1,67 @@
 import React from 'react';
-import { useFormContext, useFieldArray, FieldErrors, Path } from 'react-hook-form';
-import { ContactFormSection } from './ContactFormSection';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
-import { FormValues } from '@/app/submit/page';
-
-type RecursoLegalAgentsPath = `recursosLegais.${number}.agents`;
+import { FormValues } from '@/app/fill-model/[modelId]/page';
+import { ContactFormSection } from './ContactFormSection';
 
 interface AgentFormSectionProps {
-  parentFieldName: RecursoLegalAgentsPath;
-  agentIndex: number;
-  removeAgent: (index: number) => void;
+  recursoLegalIndex: number;
 }
 
-export const AgentFormSection: React.FC<AgentFormSectionProps> = ({
-  parentFieldName,
-  agentIndex,
-  removeAgent,
-}) => {
-  const { register, control, formState, getFieldState } = useFormContext<FormValues>();
-
-  const contactsFieldName = `${parentFieldName}.${agentIndex}.contacts` as Path<FormValues>;
-
-  const { fields: contactFields, append: appendContact, remove: removeContact } = useFieldArray({
+export const AgentFormSection: React.FC<AgentFormSectionProps> = ({ recursoLegalIndex }) => {
+  const { control, register } = useFormContext<FormValues>();
+  const { fields, append, remove } = useFieldArray({
     control,
-    name: contactsFieldName,
+    name: `recursosLegais.${recursoLegalIndex}.agents`,
   });
 
-  const nameFieldName = `${parentFieldName}.${agentIndex}.name` as Path<FormValues>;
-  const descriptionFieldName = `${parentFieldName}.${agentIndex}.description` as Path<FormValues>;
-  const urlFieldName = `${parentFieldName}.${agentIndex}.url` as Path<FormValues>;
-  const idFieldName = `${parentFieldName}.${agentIndex}.id` as Path<FormValues>;
-
-  const nameError = getFieldState(nameFieldName, formState).error;
-  const descriptionError = getFieldState(descriptionFieldName, formState).error;
-  const urlError = getFieldState(urlFieldName, formState).error;
-  const idError = getFieldState(idFieldName, formState).error;
-
   return (
-    <div className={styles.fieldArrayItem}>
-      <div className={styles.fieldArrayHeader}>
-        <h5>Agente {agentIndex + 1}</h5>
-        <button type="button" onClick={() => removeAgent(agentIndex)} className={styles.removeButton}>
-          Remover
-        </button>
-      </div>
-      <div className={styles.formGroup}>
-        <label htmlFor={nameFieldName} className={styles.label}>
-          Nome do Agente
-        </label>
-        <input
-          id={nameFieldName}
-          {...register(nameFieldName, { required: 'O nome do agente é obrigatório' })}
-          className={styles.input}
-          placeholder="Ex: João Silva / Câmara Municipal de Lisboa"
-        />
-        {nameError && <p className={styles.errorMessage}>{nameError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={descriptionFieldName} className={styles.label}>
-          Descrição do Agente
-        </label>
-        <textarea
-          id={descriptionFieldName}
-          {...register(descriptionFieldName, { required: 'A descrição do agente é obrigatória' })}
-          className={styles.input}
-          placeholder="Ex: Departamento responsável pela gestão de dados."
-          rows={4}
-        />
-        {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={urlFieldName} className={styles.label}>
-          URL do Agente
-        </label>
-        <input
-          id={urlFieldName}
-          type="url"
-          {...register(urlFieldName)}
-          className={styles.input}
-          placeholder="Ex: https://www.cm-lisboa.pt"
-        />
-        {urlError && <p className={styles.errorMessage}>{urlError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={idFieldName} className={styles.label}>
-          ID do Agente
-        </label>
-        <input
-          id={idFieldName}
-          {...register(idFieldName)}
-          className={styles.input}
-          placeholder="Ex: agente-001"
-        />
-        {idError && <p className={styles.errorMessage}>{idError.message}</p>}
-      </div>
-
-      <div className={styles.formSection}>
-        <h5 className={styles.sectionTitle}>Contactos do Agente {agentIndex + 1}</h5>
-        <p className={styles.sectionDescription}>
-          Especifique os contactos para este agente.
-        </p>
-        {contactFields.map((contactField, contactInnerIndex) => (
-          <ContactFormSection
-            key={contactField.id}
-            parentFieldName={contactsFieldName}
-            contactIndex={contactInnerIndex}
-            removeContact={removeContact}
-          />
-        ))}
-        <button type="button" onClick={() => appendContact({ mail: '', phone: '' })} className={styles.addButton}>
-          Adicionar Contacto
-        </button>
-      </div>
+    <div className={styles.formSection}>
+      <h3 className={styles.sectionTitle}>Agentes</h3>
+      {fields.map((item, index) => (
+        <div key={item.id} className={styles.fieldArrayItem}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Nome</label>
+            <input
+              {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.name`)}
+              className={styles.input}
+              placeholder="e.g., My Agent"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Descrição</label>
+            <textarea
+              {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.description`)}
+              className={styles.input}
+              placeholder="e.g., A description of my agent."
+              rows={4}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>URL</label>
+            <input
+              {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.url`)}
+              className={styles.input}
+              placeholder="e.g., https://example.com/agent"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>ID</label>
+            <input
+              {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.id`)}
+              className={styles.input}
+              placeholder="e.g., agent-001"
+            />
+          </div>
+          <ContactFormSection recursoLegalIndex={recursoLegalIndex} agentIndex={index} />
+          <button type="button" onClick={() => remove(index)} className={styles.removeButton}>
+            Remover Agente
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={() => append({ name: '', description: '', url: '', id: '', contacts: [] })} className={styles.addButton}>
+        Adicionar Agente
+      </button>
     </div>
   );
 };

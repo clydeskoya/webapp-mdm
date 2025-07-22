@@ -66,6 +66,7 @@ export default function SubmitPage() {
   const { user } = useAuthStore();
   const router = useRouter();
   const [dataModels, setDataModels] = useState<any[]>([]);
+  const [newModelId, setNewModelId] = useState<string | null>(null);
 
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -80,7 +81,7 @@ export default function SubmitPage() {
     },
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit, watch, reset } = methods;
   const submissionType = watch('submissionType');
 
   useEffect(() => {
@@ -110,25 +111,35 @@ export default function SubmitPage() {
       if (data.submissionType === 'new') {
         const folderId = process.env.NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID;
         if (!folderId) {
-          setPopup({ message: 'Folder ID is not configured.', type: 'error' });
+          setPopup({ message: 'O ID da pasta não está configurado.', type: 'error' });
           return;
         }
         response = await modelsAPI.createDataModel(folderId, {
           label: data.dataModel.label,
           description: data.dataModel.description,
           author: `${user?.firstName} ${user?.lastName}`,
+          organisation: data.dataModel.label,
+          type: "Data Asset"
         });
+        setNewModelId(response.id);
       } else {
         response = await modelsAPI.getById(data.existingDataModel);
+        setNewModelId(data.existingDataModel);
       }
-      setPopup({ message: 'Data model processed successfully!', type: 'success' });
+      setPopup({ message: 'Modelo de dados processado com sucesso!', type: 'success' });
     } catch (error) {
-      setPopup({ message: 'Failed to process data model. Please try again.', type: 'error' });
+      setPopup({ message: 'Falha ao processar o modelo de dados. Por favor, tente novamente.', type: 'error' });
     }
   };
 
   const handleGoBack = () => {
     router.push('/menu');
+  };
+
+  const handleFillModel = () => {
+    if (newModelId) {
+      router.push(`/fill-model/${newModelId}`);
+    }
   };
 
   return (
@@ -201,13 +212,22 @@ export default function SubmitPage() {
         </FormProvider>
 
         {popup && (
-          <div className={`${styles.popup} ${styles[popup.type]}`}>
-            <p>{popup.message}</p>
-            <button onClick={() => setPopup(null)}>Close</button>
+          <div className={styles.popupOverlay}>
+            <div className={`${styles.popup} ${styles[popup.type]}`}>
+              <p>{popup.message}</p>
+              {popup.type === 'success' ? (
+                <div className={styles.popupActions}>
+                  <button onClick={handleGoBack}>Voltar ao Menu</button>
+                  <button onClick={handleFillModel}>Preencher o modelo</button>
+                </div>
+              ) : (
+                <button onClick={() => setPopup(null)}>Fechar</button>
+              )}
+            </div>
           </div>
         )}
       </div>
     </ProtectedRoute>
   );
-}
+}''
 

@@ -17,46 +17,33 @@ export const DataModelFormSection: React.FC<DataModelFormSectionProps> = ({ disa
 
   return (
     <div className={styles.formSection}>
-      <h2 className={styles.sectionTitle}>Data Model Information</h2>
+      <h2 className={styles.sectionTitle}>Informação do Modelo</h2>
       <div className={styles.formGroup}>
         <label htmlFor="label" className={styles.label}>
-          Label
+          Entidade Pública
         </label>
         <input
           id="label"
-          {...register('dataModel.label', { required: !disabled && 'Label is required' })}
+          {...register('dataModel.label', { required: !disabled && 'Identifique a Entidade Pública' })}
           className={styles.input}
-          placeholder="e.g., My Awesome Data Model"
+          placeholder="e.g., AMA"
           disabled={disabled}
         />
         {labelError && <p className={styles.errorMessage}>{labelError.message}</p>}
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="description" className={styles.label}>
-          Description
+          Descrição
         </label>
         <textarea
           id="description"
-          {...register('dataModel.description', { required: !disabled && 'Description is required' })}
+          {...register('dataModel.description', { required: !disabled && 'Preencha a descrição' })}
           className={styles.input}
-          placeholder="e.g., A description of my awesome data model."
+          placeholder="Modelo de dados para a AMA onde estão presentes os catálogos X,Y,Z"
           rows={4}
           disabled={disabled}
         />
         {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
-      </div>
-      <div className={styles.formGroup}>
-        <label htmlFor="organisation" className={styles.label}>
-          Organisation
-        </label>
-        <input
-          id="organisation"
-          {...register('dataModel.organisation', { required: !disabled && 'Organisation is required' })}
-          className={styles.input}
-          placeholder="e.g., My Organisation"
-          disabled={disabled}
-        />
-        {organizationError && <p className={styles.errorMessage}>{organizationError.message}</p>}
       </div>
     </div>
   );

@@ -222,14 +222,27 @@
   height: 1.5rem;
 }
 
-.popup {
+.popupOverlay {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px;
-  border-radius: 5px;
-  color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
+}
+
+.popup {
+  padding: 25px;
+  border-radius: 10px;
+  color: white;
+  min-width: 320px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
 }
 
 .popup.success {
@@ -240,11 +253,34 @@
   background-color: #f44336;
 }
 
+.popup p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
 .popup button {
-  margin-left: 15px;
+  padding: 10px 20px;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  background-color: transparent;
   color: white;
-  background: none;
-  border: none;
   cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.popup > button {
+  margin-top: 20px;
+}
+
+.popup button:hover {
+  background-color: #fff;
+  color: #333;
+}
+
+.popupActions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 20px;
 }

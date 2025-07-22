@@ -1,135 +1,97 @@
 import React from 'react';
-import { useFormContext, FieldErrors } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
-import { FormValues } from '@/app/submit/page';
+import { FormValues } from '@/app/fill-model/[modelId]/page';
 
 interface DistributionFormSectionProps {
   datasetIndex: number;
-  distIndex: number;
-  removeDistribution: (index: number) => void;
 }
 
-export const DistributionFormSection: React.FC<DistributionFormSectionProps> = ({
-  datasetIndex,
-  distIndex,
-  removeDistribution,
-}) => {
-  const { register, formState, getFieldState } = useFormContext<FormValues>();
+export const DistributionFormSection: React.FC<DistributionFormSectionProps> = ({ datasetIndex }) => {
+  const { control, register } = useFormContext<FormValues>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `datasets.${datasetIndex}.distributions`,
+  });
 
   return (
-    <div className={styles.fieldArrayItem}>
-      <div className={styles.fieldArrayHeader}>
-        <h5>Distribuição {distIndex + 1}</h5>
-        <button type="button" onClick={() => removeDistribution(distIndex)} className={styles.removeButton}>
-          Remover
-        </button>
-      </div>
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.title`} className={styles.label}>
-          Título da Distribuição
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.title`}
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.title` as const, { required: 'O título da distribuição é obrigatório' })}
-          className={styles.input}
-          placeholder="Ex: Dados de População em CSV"
-        />
-        {titleError && <p className={styles.errorMessage}>{titleError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.description`} className={styles.label}>
-          Descrição da Distribuição
-        </label>
-        <textarea
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.description`}
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.description` as const, { required: 'A descrição da distribuição é obrigatória' })}
-          className={styles.input}
-          placeholder="Ex: Ficheiro CSV contendo dados demográficos."
-          rows={4}
-        />
-        {descriptionError && <p className={styles.errorMessage}>{descriptionError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.license`} className={styles.label}>
-          Licença da Distribuição
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.license`}
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.license` as const, { required: 'A licença da distribuição é obrigatória' })}
-          className={styles.input}
-          placeholder="Ex: Creative Commons Zero v1.0 Universal"
-        />
-        {licenseError && <p className={styles.errorMessage}>{licenseError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.format`} className={styles.label}>
-          Formato da Distribuição
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.format`}
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.format` as const)}
-          className={styles.input}
-          placeholder="Ex: CSV, JSON, XML"
-        />
-        {formatError && <p className={styles.errorMessage}>{formatError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.modified`} className={styles.label}>
-          Data de Modificação da Distribuição
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.modified`}
-          type="date"
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.modified` as const, { required: 'A data de modificação da distribuição é obrigatória' })}
-          className={styles.input}
-        />
-        {modifiedError && <p className={styles.errorMessage}>{modifiedError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.created`} className={styles.label}>
-          Data de Criação da Distribuição
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.created`}
-          type="date"
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.created` as const)}
-          className={styles.input}
-        />
-        {createdError && <p className={styles.errorMessage}>{createdError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.accessURL`} className={styles.label}>
-          URL de Acesso
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.accessURL`}
-          type="url"
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.accessURL` as const)}
-          className={styles.input}
-          placeholder="Ex: https://dados.gov.pt/dataset/populacao/distribuicao/csv"
-        />
-        {accessURLError && <p className={styles.errorMessage}>{accessURLError.message}</p>}
-      </div>
-
-      <div className={styles.formGroup}>
-        <label htmlFor={`datasets.${datasetIndex}.distributions.${distIndex}.downloadURL`} className={styles.label}>
-          URL de Download
-        </label>
-        <input
-          id={`datasets.${datasetIndex}.distributions.${distIndex}.downloadURL`}
-          type="url"
-          {...register(`datasets.${datasetIndex}.distributions.${distIndex}.downloadURL` as const)}
-          className={styles.input}
-          placeholder="Ex: https://dados.gov.pt/dataset/populacao/distribuicao/csv/download"
-        />
-        {downloadURLError && <p className={styles.errorMessage}>{downloadURLError.message}</p>}
-      </div>
+    <div className={styles.formSection}>
+      <h3 className={styles.sectionTitle}>Distribuições</h3>
+      {fields.map((item, index) => (
+        <div key={item.id} className={styles.fieldArrayItem}>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Título</label>
+            <input
+              {...register(`datasets.${datasetIndex}.distributions.${index}.title`)}
+              className={styles.input}
+              placeholder="e.g., My Distribution"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Descrição</label>
+            <textarea
+              {...register(`datasets.${datasetIndex}.distributions.${index}.description`)}
+              className={styles.input}
+              placeholder="e.g., A description of my distribution."
+              rows={4}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Licença</label>
+            <input
+              {...register(`datasets.${datasetIndex}.distributions.${index}.license`)}
+              className={styles.input}
+              placeholder="e.g., MIT"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Formato</label>
+            <input
+              {...register(`datasets.${datasetIndex}.distributions.${index}.format`)}
+              className={styles.input}
+              placeholder="e.g., CSV"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Modificado</label>
+            <input
+              type="date"
+              {...register(`datasets.${datasetIndex}.distributions.${index}.modified`)}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Criado</label>
+            <input
+              type="date"
+              {...register(`datasets.${datasetIndex}.distributions.${index}.created`)}
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>URL de Acesso</label>
+            <input
+              {...register(`datasets.${datasetIndex}.distributions.${index}.accessURL`)}
+              className={styles.input}
+              placeholder="e.g., https://example.com/access"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>URL de Download</label>
+            <input
+              {...register(`datasets.${datasetIndex}.distributions.${index}.downloadURL`)}
+              className={styles.input}
+              placeholder="e.g., https://example.com/download"
+            />
+          </div>
+          <button type="button" onClick={() => remove(index)} className={styles.removeButton}>
+            Remover Distribuição
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={() => append({ title: '', description: '', license: '', format: '', modified: '', created: '', accessURL: '', downloadURL: '' })} className={styles.addButton}>
+        Adicionar Distribuição
+      </button>
     </div>
   );
 };
