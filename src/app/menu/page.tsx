@@ -1,17 +1,76 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './menu.module.css';
+import { modelsAPI } from '@/lib/api';
 
 export default function MenuPage() {
   const { user, logout } = useAuthStore();
-  
+  const router = useRouter();
+  const [dataModels, setDataModels] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>('');
+
+  useEffect(() => {
+    async function fetchDataModels() {
+      try {
+        const folderId = process.env.NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID;
+        if (!folderId) {
+          console.error('NEXT_PUBLIC_MDM_DATAMODELS_FOLDER_ID is not defined');
+          return;
+        }
+        const response = await modelsAPI.getFromFolder(folderId);
+        setDataModels(response.items);
+      } catch (error) {
+        console.error('Failed to fetch data models:', error);
+      }
+    }
+
+    if (isModalOpen) {
+      fetchDataModels();
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleModalClose();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isModalOpen]);
 
   const handleLogout = () => {
     logout();
+  };
+
+  const handleEditClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleModelSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedModel(e.target.value);
+  };
+
+  const handleConfirmEdit = () => {
+    if (selectedModel) {
+      router.push(`/fill-model/${selectedModel}`);
+    }
   };
 
   return (
@@ -46,7 +105,7 @@ export default function MenuPage() {
           <div className={styles.contentGrid}>
             {/* Quick Actions */}
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Ações Rápidas</h2>
+              <h2 className={styles.cardTitle}>Menu</h2>
               <div className={styles.quickActions}>
                 <Link href="/submit" className={styles.actionLink}>
                   <div className={styles.actionContent}>
@@ -61,7 +120,7 @@ export default function MenuPage() {
                     </div>
                   </div>
                 </Link>
-                <Link href="/edit-data-model" className={styles.actionLink}>
+                <button onClick={handleEditClick} className={styles.actionLink}>
                   <div className={styles.actionContent}>
                     <div className={styles.actionIcon}>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +132,7 @@ export default function MenuPage() {
                       <p>Selecione um dos modelos disponíveis e altere ou adicione recursos</p>
                     </div>
                   </div>
-                </Link>
+                </button>
                 <Link href="/edit-dataset-schema" className={styles.actionLink}>
                   <div className={styles.actionContent}>
                     <div className={styles.actionIcon}>
@@ -169,6 +228,30 @@ export default function MenuPage() {
             </div>
           </div>
         </main>
+
+        {isModalOpen && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modal}>
+              <h2 className={styles.modalTitle}>Selecione um Modelo de Dados para Editar</h2>
+              <select onChange={handleModelSelect} value={selectedModel} className={styles.modalSelect}>
+                <option value="">Selecione um modelo</option>
+                {dataModels.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {model.label}
+                  </option>
+                ))}
+              </select>
+              <div className={styles.modalActions}>
+                <button onClick={handleModalClose} className={styles.modalButton}>
+                  Cancelar
+                </button>
+                <button onClick={handleConfirmEdit} className={`${styles.modalButton} ${styles.confirm}`} disabled={!selectedModel}>
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );
