@@ -10,49 +10,7 @@ import { useAuthStore } from '@/lib/auth-store';
 import { RecursoLegalFormSection } from '@/components/RecursoLegalFormSection';
 import { DatasetFormSection } from '@/components/DatasetFormSection';
 import { AgentFormSection } from '@/components/AgentFormSection';
-
-// Type Definitions (should be shared)
-
-type Contact = {
-  mail: string;
-  phone: string;
-};
-
-type Agent = {
-  name: string;
-  description: string;
-  url: string;
-  id: string;
-  contacts: Contact[];
-};
-
-type RecursoLegal = {
-  jurisdiction: string;
-  legalAct: string;
-  agents: Agent[];
-};
-
-type Distribution = {
-  title: string;
-  description: string;
-  license: string;
-  format: string;
-  modified: string;
-  created: string;
-  accessURL: string;
-  downloadURL: string;
-};
-
-type Dataset = {
-  title: string;
-  description: string;
-  distributions: Distribution[];
-};
-
-export type FormValues = {
-  recursosLegais: RecursoLegal[];
-  datasets: Dataset[];
-};
+import { FormValues } from '@/lib/types';
 
 export default function FillModelPage() {
   const { user } = useAuthStore();
