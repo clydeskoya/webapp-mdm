@@ -3,6 +3,7 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
 import { FormValues } from '@/lib/types';
 import { DatasetFormSection } from './DatasetFormSection';
+import { DataServiceFormSection } from './DataServiceFormSection';
 
 export const CatalogueFormSection: React.FC = () => {
   const { register, control, formState: { errors } } = useFormContext<FormValues>();
@@ -61,7 +62,7 @@ export const CatalogueFormSection: React.FC = () => {
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="catalogue.homepage" className={styles.label}>
-          Web Page
+          Página Principal
         </label>
         <input
           id="catalogue.homepage"
@@ -84,6 +85,7 @@ export const CatalogueFormSection: React.FC = () => {
         {errors.catalogue?.owner && <p className={styles.errorMessage}>{errors.catalogue.owner.message}</p>}
       </div>
       <DatasetFormSection />
+      <DataServiceFormSection />
     </div>
   );
 };
