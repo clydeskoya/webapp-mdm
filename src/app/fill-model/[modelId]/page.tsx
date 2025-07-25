@@ -7,9 +7,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './fill-model.module.css';
 import { modelsAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth-store';
-import { RecursoLegalFormSection } from '@/components/RecursoLegalFormSection';
-import { DatasetFormSection } from '@/components/DatasetFormSection';
-import { AgentFormSection } from '@/components/AgentFormSection';
+import { CatalogueFormSection } from '@/components/CatalogueFormSection';
 import { FormValues } from '@/lib/types';
 
 export default function FillModelPage() {
@@ -22,8 +20,16 @@ export default function FillModelPage() {
 
   const methods = useForm<FormValues>({
     defaultValues: {
-      recursosLegais: [],
-      datasets: [],
+      catalogue: {
+        title: '',
+        description: '',
+        language: '',
+        modifiedDate: new Date(),
+        homepage: '',
+        owner: '',
+        datasets: [],
+        dataservices: [],
+      },
     },
   });
 
@@ -45,7 +51,7 @@ export default function FillModelPage() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     // Logic to update the model with new resources
     console.log(data);
-    setPopup({ message: 'Recursos submetidos com sucesso!', type: 'success' });
+    setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
   };
 
   const handleGoBack = () => {
@@ -55,12 +61,6 @@ export default function FillModelPage() {
   if (!dataModel) {
     return <div>Loading...</div>;
   }
-
-  const tiposActoJuridico = [
-    { key: '1', value: 'Lei' },
-    { key: '2', value: 'Decreto-Lei' },
-    { key: '3', value: 'Portaria' },
-  ];
 
   return (
     <ProtectedRoute>
@@ -72,17 +72,16 @@ export default function FillModelPage() {
         </button>
         <header className={styles.header}>
           <h1 className={styles.title}>Preencher Modelo: {dataModel.label}</h1>
-          <p className={styles.subtitle}>Adicione recursos ao seu modelo de dados.</p>
+          <p className={styles.subtitle}>Adicione um catálogo ao seu modelo de dados.</p>
         </header>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className={styles.form}>
-            <RecursoLegalFormSection tiposActoJuridico={tiposActoJuridico}></RecursoLegalFormSection>
-            <DatasetFormSection />
+            <CatalogueFormSection />
 
             <div className={styles.formActions}>
               <button type="submit" className={styles.submitButton}>
-                Submeter Recursos
+                Submeter Catálogo
               </button>
             </div>
           </form>

@@ -29,6 +29,12 @@ export type Distribution = {
 export type Dataset = {
   title: string;
   description: string;
+  access: string;
+  category: string;
+  version: number;
+  modified_date: Date;
+  language: string;
+  tags: string [];
   distributions: Distribution[];
 };
 
@@ -55,6 +61,5 @@ export type Catalogue = {
 };
 
 export type FormValues = {
-  recursosLegais: RecursoLegal[];
-  datasets: Dataset[];
+  catalogue: Catalogue;
 };
