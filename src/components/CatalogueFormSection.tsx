@@ -1,10 +1,11 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
 import { FormValues } from '@/lib/types';
+import { DatasetFormSection } from './DatasetFormSection';
 
 export const CatalogueFormSection: React.FC = () => {
-  const { register, formState: { errors } } = useFormContext<FormValues>();
+  const { register, control, formState: { errors } } = useFormContext<FormValues>();
 
   return (
     <div className={styles.formSection}>
@@ -60,7 +61,7 @@ export const CatalogueFormSection: React.FC = () => {
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="catalogue.homepage" className={styles.label}>
-          Página Principal
+          Web Page
         </label>
         <input
           id="catalogue.homepage"
@@ -82,6 +83,7 @@ export const CatalogueFormSection: React.FC = () => {
         />
         {errors.catalogue?.owner && <p className={styles.errorMessage}>{errors.catalogue.owner.message}</p>}
       </div>
+      <DatasetFormSection />
     </div>
   );
 };

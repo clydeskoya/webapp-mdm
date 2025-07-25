@@ -49,8 +49,15 @@ export default function FillModelPage() {
   }, [modelId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const modifiedData = {
+      ...data,
+      catalogue: {
+        ...data.catalogue,
+        title: `Catálogo - ${data.catalogue.title}`,
+      },
+    };
     // Logic to update the model with new resources
-    console.log(data);
+    console.log(modifiedData);
     setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
   };
 
