@@ -58,8 +58,30 @@ export default function SubmitPage() {
         type: "Data Asset"
       });
       setNewModelId(response.id);
+
+      const dcatptId = '78a00319-8166-40a7-a058-f88f12d18164';
+      const dataTypes = [
+        { id: 'ba2a4d89-8025-4f5d-83f9-2ef2b8426fa6', title: 'String' },
+        { id: '20aff0d8-7c0f-47cf-91dc-eafebab5c178', title: 'Date' },
+        { id: '72cc84f6-89f7-4789-85b3-a9e70e4fb142', title: 'Text' },
+        { id: '76774715-abad-4e74-8153-fcc7af6dcfd6', title: 'Decimal' },
+        { id: '8699d228-31bb-4cec-b5f2-8c1a1b8f71fa', title: 'Níveis_Acesso' },
+        { id: 'ba0027f4-a430-40ef-920f-c7bbedd82c3e', title: 'Tipo_Agente' },
+        { id: '107efc7e-d600-42e7-8596-f0e2189ef90a', title: 'Categoria' },
+        { id: 'f07abc44-23b7-4fa4-a57d-a6262ef7aca5', title: 'Tipo_Acto_Jurídico' },
+        { id: '0f12207a-93c9-4437-8f2a-f9afa9e96620', title: 'Entidade_Pública' },
+      ];
+
+      console.log('Starting to add data types...');
+      for (const dataType of dataTypes) {
+        console.log(`Adding data type: ${dataType.title} (${dataType.id})`);
+        await modelsAPI.addDataTypeToModel(response.id, dcatptId, dataType.id);
+      }
+      console.log('Finished adding data types.');
+
       setPopup({ message: 'Modelo de dados processado com sucesso!', type: 'success' });
     } catch (error) {
+      console.error('Error during submission process:', error);
       setPopup({ message: 'Falha ao processar o modelo de dados. Por favor, tente novamente.', type: 'error' });
     }
   };

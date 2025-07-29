@@ -18,6 +18,7 @@ export default function FillModelPage() {
   const [dataModel, setDataModel] = useState<any>(null);
   const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+
   const methods = useForm<FormValues>({
     defaultValues: {
       catalogue: {
@@ -56,9 +57,21 @@ export default function FillModelPage() {
         title: `Catálogo - ${data.catalogue.title}`,
       },
     };
-    // Logic to update the model with new resources
     console.log(modifiedData);
-    setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
+    try {
+      const response = await modelsAPI.createDataClass(modelId, {
+        label: modifiedData.catalogue.title,
+        description: modifiedData.catalogue.description,
+        minMultiplicity: 1,
+        maxMultiplicity: 1,
+      });
+      
+
+      setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
+    } catch (error) {
+      console.error('Failed to create data class:', error);
+      setPopup({ message: 'Falha ao submeter o catálogo.', type: 'error' });
+    }
   };
 
   const handleGoBack = () => {

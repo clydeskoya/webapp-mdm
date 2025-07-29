@@ -125,6 +125,18 @@ export const modelsAPI = {
     const response = await api.post(`/folders/${folderId}/dataModels`, data);
     return response.data;
   },
+
+  createDataClass: async (modelId: string, data: { label: string; description: string; minMultiplicity: number; maxMultiplicity: number }) => {
+    const response = await api.post(`/dataModels/${modelId}/dataClasses`, data);
+    return response.data;
+  },
+
+  addDataTypeToModel: async (dataModelId: string, otherModelId: string, dataTypeId: string) => {
+    const response = await api.post(`/dataModels/${dataModelId}/dataTypes/${otherModelId}/${dataTypeId}`, {});
+    return response.data;
+  },
+
+
 };
 
 export default api; 

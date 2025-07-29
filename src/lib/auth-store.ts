@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { authAPI, LoginResponse } from './api';
+import { authAPI, LoginResponse} from './api';
 
 interface User {
   id: string;
@@ -17,6 +17,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   updateUser: (newUserData: Partial<User>) => void;
@@ -31,7 +32,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
-      
+
       login: async (username: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
