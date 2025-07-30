@@ -146,6 +146,15 @@ export const modelsAPI = {
     return response.data;
   },
 
+  createChildDataClass: async (modelId: string, parentDataClassId: string, data: { label: string; description: string; minMultiplicity: number; maxMultiplicity: number }) => {
+    const body = {
+      ...data,
+      domainType: 'DataClass',
+    };
+    const response = await api.post(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses`, body);
+    return response.data;
+  },
+
 
 };
 

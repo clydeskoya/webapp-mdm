@@ -92,13 +92,13 @@ export default function FillModelPage() {
         });
       }
 
-      const modifiedDateDataType = dataTypes.items.find(dt => dt.label === 'Date');
-      if (modifiedDateDataType) {
+      const DateDataType = dataTypes.items.find(dt => dt.label === 'Date');
+      if (DateDataType) {
         await modelsAPI.createDataElement(modelId, dataClassId, {
           label: 'Modificado',
           maxMultiplicity: '1',
           minMultiplicity: '1',
-          dataType: modifiedDateDataType.id,
+          dataType: DateDataType.id,
           description: modifiedData.catalogue.modifiedDate,
         });
       }
@@ -124,9 +124,166 @@ export default function FillModelPage() {
 
       }
 
-      const titleDataType = dataTypes.items.find(dt => dt.label === 'String');
-      if (titleDataType) {
+      // Create child data classes for datasets
+      const accessDataType = dataTypes.items.find(dt => dt.label === 'Níveis_Acesso');
+      const categoryDataType = dataTypes.items.find(dt => dt.label === 'Categoria');
+      const decimalDataType = dataTypes.items.find(dt => dt.label === 'Decimal');
 
+      if (modifiedData.catalogue.datasets) {
+        for (const dataset of modifiedData.catalogue.datasets) {
+          const datasetIteration = await modelsAPI.createChildDataClass(modelId, dataClassId, {
+            label: `Dataset - ${dataset.title}`,
+            description: dataset.description,
+            minMultiplicity: 1,
+            maxMultiplicity: -1,
+          });
+
+          // Add data elements to the dataset's data class
+          if (stringDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Título',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: stringDataType.id,
+              description: dataset.title,
+            });
+          }
+
+          if (textDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Descrição',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: textDataType.id,
+              description: dataset.description,
+            });
+          }
+
+          if (DateDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Modificado',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: DateDataType.id,
+              description: dataset.modified_date,
+            });
+          }
+
+          
+          if (accessDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Acesso',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: accessDataType.id,
+              description: dataset.access
+            });
+          }
+         
+          if (decimalDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Versão',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: decimalDataType.id,
+              description: dataset.version
+            });
+          }
+          
+          if (categoryDataType) {
+            await modelsAPI.createDataElement(modelId, datasetIteration.id, {
+              label: 'Categoria',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: categoryDataType.id,
+              description: dataset.category
+            });
+          }
+          //ChildDataClasses
+          //Distribution
+          //Schema
+          //Agente
+        }
+      }
+
+      // Create child data classes for dataservices
+      if (modifiedData.catalogue.dataservices) {
+        for (const dataservice of modifiedData.catalogue.dataservices) {
+          const dataserviceIteration =await modelsAPI.createChildDataClass(modelId, dataClassId, {
+            label: `DataService - ${dataservice.title}`,
+            description: dataservice.description,
+            minMultiplicity: 1,
+            maxMultiplicity: -1,
+          });
+          //Titulo
+          if (stringDataType) {
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Título',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: stringDataType.id,
+              description: dataservice.title
+            });
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Formato',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: stringDataType.id,
+              description: dataservice.format
+            });
+
+          }
+          //Descricao
+          if (textDataType) {
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Descrição',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: textDataType.id,
+              description: dataservice.description
+            });
+
+          //URL_Download
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Endpoint',
+              maxMultiplicity: '-1',
+              minMultiplicity: '1',
+              dataType: textDataType.id,
+              description: dataservice.endpoint_url
+            });
+
+          }
+          
+          
+          //Licenca
+          const licenseDataType = dataTypes.items.find(dt => dt.label === 'Licença');
+          if (licenseDataType) {
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Licença',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: licenseDataType.id,
+              description: dataservice.license
+            });
+          }
+
+          //Acesso
+          if (accessDataType) {
+            await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
+              label: 'Acesso',
+              maxMultiplicity: '1',
+              minMultiplicity: '1',
+              dataType: accessDataType.id,
+              description: dataservice.access
+            });
+          }
+        
+        //ChildDataClasses:
+        //Agente
+        //RecursoLegal
+        
+        
+        }
       }
 
     setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });

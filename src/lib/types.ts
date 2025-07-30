@@ -31,8 +31,8 @@ export type Dataset = {
   description: string;
   access: string;
   category: string;
-  version: number;
-  modified_date: Date;
+  version: string;
+  modified_date: string;
   language: string;
   tags: string [];
   distributions: Distribution[];
