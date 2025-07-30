@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const API_BASE_URL = process.env.NEXT_PUBLIC_MDM_API_URL;
 
 async function handler(req: NextRequest) {
+  console.log('[API PROXY] NEXT_PUBLIC_MDM_API_URL:', process.env.NEXT_PUBLIC_MDM_API_URL);
   // Extract the path from the incoming request and construct the target URL
   const path = req.nextUrl.pathname.replace('/api/mdm', '');
   const url = `${API_BASE_URL}${path}${req.nextUrl.search}`;

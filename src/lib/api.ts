@@ -136,6 +136,16 @@ export const modelsAPI = {
     return response.data;
   },
 
+  createDataElement: async (modelId: string, dataClassId: string, data: { label: string; maxMultiplicity: string; minMultiplicity: string; dataType: string; description: string; }) => {
+    const response = await api.post(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements`, data);
+    return response.data;
+  },
+
+  getDataTypesFromModel: async (modelId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/dataTypes`);
+    return response.data;
+  },
+
 
 };
 

@@ -25,7 +25,7 @@ export default function FillModelPage() {
         title: '',
         description: '',
         language: '',
-        modifiedDate: new Date(),
+        modifiedDate: '',
         homepage: '',
         owner: '',
         datasets: [],
@@ -57,7 +57,7 @@ export default function FillModelPage() {
         title: `Catálogo - ${data.catalogue.title}`,
       },
     };
-    console.log(modifiedData);
+
     try {
       const response = await modelsAPI.createDataClass(modelId, {
         label: modifiedData.catalogue.title,
@@ -65,12 +65,75 @@ export default function FillModelPage() {
         minMultiplicity: 1,
         maxMultiplicity: 1,
       });
-      
 
-      setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
+      const dataClassId = response.id; // Store the ID of the created data class
+
+     // Fetch available data types for the model
+      const dataTypes = await modelsAPI.getDataTypesFromModel(modelId);
+      console.log(dataTypes);
+
+      // Find the correct data type for each field and create data elements
+      const stringDataType = dataTypes.items.find(dt => dt.label === 'String');
+      if (stringDataType) {
+        await modelsAPI.createDataElement(modelId, dataClassId, {
+          label: 'Idioma',
+          maxMultiplicity: '-1',
+          minMultiplicity: '1',
+          dataType: stringDataType.id,
+          description: modifiedData.catalogue.language,
+        });
+
+        await modelsAPI.createDataElement(modelId, dataClassId, {
+          label: 'Título',
+          maxMultiplicity: '1',
+          minMultiplicity: '1',
+          dataType: stringDataType.id,
+          description: modifiedData.catalogue.title
+        });
+      }
+
+      const modifiedDateDataType = dataTypes.items.find(dt => dt.label === 'Date');
+      if (modifiedDateDataType) {
+        await modelsAPI.createDataElement(modelId, dataClassId, {
+          label: 'Modificado',
+          maxMultiplicity: '1',
+          minMultiplicity: '1',
+          dataType: modifiedDateDataType.id,
+          description: modifiedData.catalogue.modifiedDate,
+        });
+      }
+
+      const textDataType = dataTypes.items.find(dt => dt.label === 'Text');
+      if (textDataType) {
+        await modelsAPI.createDataElement(modelId, dataClassId, {
+          label: 'Homepage',
+          maxMultiplicity: '1',
+          minMultiplicity: '1',
+          dataType: textDataType.id,
+          description: modifiedData.catalogue.homepage
+        });
+        
+        await modelsAPI.createDataElement(modelId, dataClassId, {
+          label: 'Descrição',
+          maxMultiplicity: '1',
+          minMultiplicity: '1',
+          dataType: textDataType.id,
+          description: data.catalogue.description
+        });
+
+
+      }
+
+      const titleDataType = dataTypes.items.find(dt => dt.label === 'String');
+      if (titleDataType) {
+
+      }
+
+    setPopup({ message: 'Catálogo submetido com sucesso!', type: 'success' });
     } catch (error) {
       console.error('Failed to create data class:', error);
-      setPopup({ message: 'Falha ao submeter o catálogo.', type: 'error' });
+      
+    setPopup({ message: 'Falha ao submeter o catálogo.', type: 'error' });
     }
   };
 

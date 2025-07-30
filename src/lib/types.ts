@@ -53,7 +53,7 @@ export type Catalogue = {
   title: string;
   description: string;
   language: string;
-  modifiedDate: Date;
+  modifiedDate: string;
   homepage: string;
   owner: string;
   datasets: Dataset[];
