@@ -50,13 +50,26 @@ export default function FillModelPage() {
   }, [modelId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+
+
     const modifiedData = {
       ...data,
       catalogue: {
         ...data.catalogue,
         title: `Catálogo - ${data.catalogue.title}`,
+        datasets: data.catalogue.datasets.map(dataset => ({
+          ...dataset,
+          title: `Dataset - ${dataset.title}`,
+          simple_title: dataset.title
+        })),
+        dataservices: data.catalogue.dataservices.map(dataservice => ({
+          ...dataservice,
+          title: `DataService - ${dataservice.title}`,
+          simple_title: dataservice.title
+        })),
       },
     };
+
 
     try {
       const response = await modelsAPI.createDataClass(modelId, {
@@ -70,7 +83,6 @@ export default function FillModelPage() {
 
      // Fetch available data types for the model
       const dataTypes = await modelsAPI.getDataTypesFromModel(modelId);
-      console.log(dataTypes);
 
       // Find the correct data type for each field and create data elements
       const stringDataType = dataTypes.items.find(dt => dt.label === 'String');
@@ -88,7 +100,7 @@ export default function FillModelPage() {
           maxMultiplicity: '1',
           minMultiplicity: '1',
           dataType: stringDataType.id,
-          description: modifiedData.catalogue.title
+          description: data.catalogue.title
         });
       }
 
@@ -131,8 +143,9 @@ export default function FillModelPage() {
 
       if (modifiedData.catalogue.datasets) {
         for (const dataset of modifiedData.catalogue.datasets) {
+          //console.log("Creating dataset with title:", dataset.title);
           const datasetIteration = await modelsAPI.createChildDataClass(modelId, dataClassId, {
-            label: `Dataset - ${dataset.title}`,
+            label: dataset.title,
             description: dataset.description,
             minMultiplicity: 1,
             maxMultiplicity: -1,
@@ -145,7 +158,7 @@ export default function FillModelPage() {
               maxMultiplicity: '1',
               minMultiplicity: '1',
               dataType: stringDataType.id,
-              description: dataset.title,
+              description: dataset.simple_title,
             });
           }
 
@@ -200,17 +213,36 @@ export default function FillModelPage() {
             });
           }
           //ChildDataClasses
-          //Distribution
-          //Schema
+          if (dataset.distributions) {
+            for (const distribution of dataset.distributions) {
+              //console.log("Creating dataset with title:", dataset.title);
+              const distributionIteration = await modelsAPI.createChildDataClass(modelId, datasetIteration.id, {
+                label: `Distribution - ${dataset.simple_title}.${distribution.format}`,
+                description: `Distribuição do dataset ${dataset.simple_title} em formato ${distribution.format}`,
+                minMultiplicity: 1,
+                maxMultiplicity: -1,
+              });
+              //elementos da distribuição
+
+
+            }
+          }
+          const schemaIteration = await modelsAPI.createChildDataClass(modelId, datasetIteration.id, {
+            label: `Schema - ${dataset.simple_title}`,
+            description: '',
+            minMultiplicity: 1,
+            maxMultiplicity: -1,
+          });
           //Agente
         }
       }
 
-      // Create child data classes for dataservices
+      
       if (modifiedData.catalogue.dataservices) {
         for (const dataservice of modifiedData.catalogue.dataservices) {
+          //console.log("Creating dataservice with title:", dataservice.title);
           const dataserviceIteration =await modelsAPI.createChildDataClass(modelId, dataClassId, {
-            label: `DataService - ${dataservice.title}`,
+            label: dataservice.title,
             description: dataservice.description,
             minMultiplicity: 1,
             maxMultiplicity: -1,
@@ -222,7 +254,7 @@ export default function FillModelPage() {
               maxMultiplicity: '1',
               minMultiplicity: '1',
               dataType: stringDataType.id,
-              description: dataservice.title
+              description: dataservice.simple_title
             });
             await modelsAPI.createDataElement(modelId, dataserviceIteration.id, {
               label: 'Formato',
