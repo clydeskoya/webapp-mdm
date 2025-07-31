@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import styles from '@/app/submit/submit.module.css';
-import { FormValues } from '@/app/fill-model/[modelId]/page';
+import { FormValues } from '@/lib/types';
 
 interface DistributionFormSectionProps {
   datasetIndex: number;
@@ -11,7 +11,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
   const { control, register } = useFormContext<FormValues>();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `datasets.${datasetIndex}.distributions`,
+    name: `catalogue.datasets.${datasetIndex}.distributions`,
   });
 
   return (
@@ -20,26 +20,9 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
       {fields.map((item, index) => (
         <div key={item.id} className={styles.fieldArrayItem}>
           <div className={styles.formGroup}>
-            <label className={styles.label}>Título</label>
-            <input
-              {...register(`datasets.${datasetIndex}.distributions.${index}.title`)}
-              className={styles.input}
-              placeholder="e.g., My Distribution"
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Descrição</label>
-            <textarea
-              {...register(`datasets.${datasetIndex}.distributions.${index}.description`)}
-              className={styles.input}
-              placeholder="e.g., A description of my distribution."
-              rows={4}
-            />
-          </div>
-          <div className={styles.formGroup}>
             <label className={styles.label}>Licença</label>
             <input
-              {...register(`datasets.${datasetIndex}.distributions.${index}.license`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.license`)}
               className={styles.input}
               placeholder="e.g., MIT"
             />
@@ -47,7 +30,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           <div className={styles.formGroup}>
             <label className={styles.label}>Formato</label>
             <input
-              {...register(`datasets.${datasetIndex}.distributions.${index}.format`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.format`)}
               className={styles.input}
               placeholder="e.g., CSV"
             />
@@ -56,7 +39,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <label className={styles.label}>Modificado</label>
             <input
               type="date"
-              {...register(`datasets.${datasetIndex}.distributions.${index}.modified`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.modified`)}
               className={styles.input}
             />
           </div>
@@ -64,14 +47,14 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <label className={styles.label}>Criado</label>
             <input
               type="date"
-              {...register(`datasets.${datasetIndex}.distributions.${index}.created`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.created`)}
               className={styles.input}
             />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>URL de Acesso</label>
             <input
-              {...register(`datasets.${datasetIndex}.distributions.${index}.accessURL`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.accessURL`)}
               className={styles.input}
               placeholder="e.g., https://example.com/access"
             />
@@ -79,7 +62,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           <div className={styles.formGroup}>
             <label className={styles.label}>URL de Download</label>
             <input
-              {...register(`datasets.${datasetIndex}.distributions.${index}.downloadURL`)}
+              {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.downloadURL`)}
               className={styles.input}
               placeholder="e.g., https://example.com/download"
             />
@@ -89,7 +72,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
           </button>
         </div>
       ))}
-      <button type="button" onClick={() => append({ title: '', description: '', license: '', format: '', modified: '', created: '', accessURL: '', downloadURL: '' })} className={styles.addButton}>
+      <button type="button" onClick={() => append({ license: '', format: '', modified: new Date(), created: new Date(), accessURL: '', downloadURL: '' })} className={styles.addButton}>
         Adicionar Distribuição
       </button>
     </div>

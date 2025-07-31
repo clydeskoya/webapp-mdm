@@ -22,9 +22,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-
-
 // Types for API responses
 export interface LoginResponse {
   id: string;
@@ -36,21 +33,8 @@ export interface LoginResponse {
   createdBy: string;
 };
 
-export interface Submission {
-  id: string;
-  title: string;
-  description: string;
-  data: Record<string, unknown>;
-  status: 'pending' | 'approved' | 'rejected';
-  createdAt: string;
-  updatedAt: string;
-}
 
-export interface CreateSubmissionRequest {
-  title: string;
-  description: string;
-  data: Record<string, unknown>;
-}
+
 
 // Authentication API
 export const authAPI = {
@@ -66,38 +50,6 @@ export const authAPI = {
   getCurrentUser: async () => {
     const response = await api.get('/auth/me');
     return response.data;
-  },
-};
-
-// Submissions API
-export const submissionsAPI = {
-  // Get recent submissions
-  getRecent: async (limit: number = 10): Promise<Submission[]> => {
-    const response = await api.get(`/submissions/recent?limit=${limit}`);
-    return response.data;
-  },
-
-  // Create new submission
-  create: async (submission: CreateSubmissionRequest): Promise<Submission> => {
-    const response = await api.post('/submissions', submission);
-    return response.data;
-  },
-
-  // Get submission by ID
-  getById: async (id: string): Promise<Submission> => {
-    const response = await api.get(`/submissions/${id}`);
-    return response.data;
-  },
-
-  // Update submission
-  update: async (id: string, updates: Partial<CreateSubmissionRequest>): Promise<Submission> => {
-    const response = await api.put(`/submissions/${id}`, updates);
-    return response.data;
-  },
-
-  // Delete submission
-  delete: async (id: string): Promise<void> => {
-    await api.delete(`/submissions/${id}`);
   },
 };
 
@@ -125,6 +77,18 @@ export const modelsAPI = {
     const response = await api.post(`/folders/${folderId}/dataModels`, data);
     return response.data;
   },
+
+  listDataModels: async (folderId: string) => {
+    const response = await api.get(`/folders/${folderId}/dataModels`);
+    return response.data;
+  },
+
+  listDataClasses: async (modelId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/allDataClasses`);
+    return response.data;
+  },
+
+  
 
   createDataClass: async (modelId: string, data: { label: string; description: string; minMultiplicity: number; maxMultiplicity: number }) => {
     const response = await api.post(`/dataModels/${modelId}/dataClasses`, data);
@@ -154,8 +118,6 @@ export const modelsAPI = {
     const response = await api.post(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses`, body);
     return response.data;
   },
-
-
 };
 
 export default api; 

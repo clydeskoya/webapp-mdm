@@ -107,8 +107,8 @@ export const DatasetFormSection: React.FC = () => {
           description: '', 
           access: '',
           category: '',
-          version: 1,
-          modified_date: new Date(),
+          version: 1.0,
+          modified_date: new Date().toISOString().split('T')[0],
           language: '',
           tags: [],
           distributions: [] 

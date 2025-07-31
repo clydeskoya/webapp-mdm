@@ -50,6 +50,7 @@ export default function FillModelPage() {
   }, [modelId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log('Form data:', data);
 
 
     const modifiedData = {
@@ -223,6 +224,57 @@ export default function FillModelPage() {
                 maxMultiplicity: -1,
               });
               //elementos da distribuição
+              if (stringDataType) {
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'Formato',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: stringDataType.id,
+                  description: distribution.format,
+                });
+              }
+              if (textDataType) {
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'URL de Acesso',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: textDataType.id,
+                  description: distribution.accessURL,
+                });
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'URL de Download',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: textDataType.id,
+                  description: distribution.downloadURL,
+                });
+              }
+              if (DateDataType) {
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'Modificado',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: DateDataType.id,
+                  description: distribution.modified,
+                });
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'Criado',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: DateDataType.id,
+                  description: distribution.created,
+                });
+              }
+              const licenseDataType = dataTypes.items.find(dt => dt.label === 'Licença');
+              if (licenseDataType) {
+                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
+                  label: 'Licença',
+                  maxMultiplicity: '1',
+                  minMultiplicity: '1',
+                  dataType: licenseDataType.id,
+                  description: distribution.license,
+                });
+              }
 
 
             }
