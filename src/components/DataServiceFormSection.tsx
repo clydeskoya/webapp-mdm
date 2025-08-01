@@ -58,17 +58,19 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Acesso</label>
-            <select
-              {...register(`catalogue.dataservices.${index}.access`)}
-              className={styles.input}
-            >
-              <option value="">Selecione um nível de acesso</option>
-              {accessLevels.map((level: any) => (
-                <option key={level.id} value={level.value}>
-                  {level.value}
-                </option>
-              ))}
-            </select>
+            <div className={styles.selectWrapper}>
+              <select
+                {...register(`catalogue.dataservices.${index}.access`)}
+                className={styles.select}
+              >
+                <option value="">Selecione um nível de acesso</option>
+                {accessLevels.map((level: any) => (
+                  <option key={level.id} value={level.value}>
+                    {level.value}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Formato</label>

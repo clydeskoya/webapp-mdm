@@ -42,31 +42,35 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Acesso</label>
-            <select
-              {...register(`catalogue.datasets.${index}.access`)}
-              className={styles.input}
-            >
-              <option value="">Selecione um nível de acesso</option>
-              {accessLevels.map((level: any) => (
-                <option key={level.id} value={level.value}>
-                  {level.value}
-                </option>
-              ))}
-            </select>
+            <div className={styles.selectWrapper}>
+              <select
+                {...register(`catalogue.datasets.${index}.access`)}
+                className={styles.select}
+              >
+                <option value="">Selecione um nível de acesso</option>
+                {accessLevels.map((level: any) => (
+                  <option key={level.id} value={level.value}>
+                    {level.value}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Categoria</label>
-            <select
-              {...register(`catalogue.datasets.${index}.category`)}
-              className={styles.input}
-            >
-              <option value="">Selecione uma categoria</option>
-              {categories.map((category: any) => (
-                <option key={category.id} value={category.value}>
-                  {category.value}
-                </option>
-              ))}
-            </select>
+            <div className={styles.selectWrapper}>
+              <select
+                {...register(`catalogue.datasets.${index}.category`)}
+                className={styles.select}
+              >
+                <option value="">Selecione uma categoria</option>
+                {categories.map((category: any) => (
+                  <option key={category.id} value={category.value}>
+                    {category.value}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Versão</label>
@@ -88,17 +92,19 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Idioma</label>
-            <select
-              {...register(`catalogue.datasets.${index}.language`)}
-              className={styles.input}
-            >
-              <option value="">Selecione um idioma</option>
-              <option value="PT">PT</option>
-              <option value="EN">EN</option>
-              <option value="ES">ES</option>
-              <option value="FR">FR</option>
-              <option value="IT">IT</option>
-            </select>
+            <div className={styles.selectWrapper}>
+              <select
+                {...register(`catalogue.datasets.${index}.language`)}
+                className={styles.select}
+              >
+                <option value="">Selecione um idioma</option>
+                <option value="PT">PT</option>
+                <option value="EN">EN</option>
+                <option value="ES">ES</option>
+                <option value="FR">FR</option>
+                <option value="IT">IT</option>
+              </select>
+            </div>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Tags (separadas por vírgula)</label>
