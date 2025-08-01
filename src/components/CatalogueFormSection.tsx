@@ -5,7 +5,12 @@ import { FormValues } from '@/lib/types';
 import { DatasetFormSection } from './DatasetFormSection';
 import { DataServiceFormSection } from './DataServiceFormSection';
 
-export const CatalogueFormSection: React.FC = () => {
+interface CatalogueFormSectionProps {
+  categories: any[];
+  accessLevels: any[];
+}
+
+export const CatalogueFormSection: React.FC<CatalogueFormSectionProps> = ({ categories, accessLevels }) => {
   const { register, control, formState: { errors } } = useFormContext<FormValues>();
 
   return (
@@ -37,17 +42,23 @@ export const CatalogueFormSection: React.FC = () => {
         {errors.catalogue?.description && <p className={styles.errorMessage}>{errors.catalogue.description.message}</p>}
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="catalogue.language" className={styles.label}>
-          Idioma
-        </label>
-        <input
-          id="catalogue.language"
-          {...register('catalogue.language', { required: 'O idioma é obrigatório' })}
-          className={styles.input}
-          placeholder="e.g., pt"
-        />
-        {errors.catalogue?.language && <p className={styles.errorMessage}>{errors.catalogue.language.message}</p>}
-      </div>
+            <label htmlFor="catalogue.language" className={styles.label}>
+              Idioma
+            </label>
+            <select
+              id="catalogue.language"
+              {...register('catalogue.language', { required: 'O idioma é obrigatório' })}
+              className={styles.input}
+            >
+              <option value="">Selecione um idioma</option>
+              <option value="PT">PT</option>
+              <option value="EN">EN</option>
+              <option value="ES">ES</option>
+              <option value="FR">FR</option>
+              <option value="IT">IT</option>
+            </select>
+            {errors.catalogue?.language && <p className={styles.errorMessage}>{errors.catalogue.language.message}</p>}
+          </div>
       <div className={styles.formGroup}>
         <label htmlFor="catalogue.modifiedDate" className={styles.label}>
           Data de Modificação
@@ -84,8 +95,8 @@ export const CatalogueFormSection: React.FC = () => {
         />
         {errors.catalogue?.owner && <p className={styles.errorMessage}>{errors.catalogue.owner.message}</p>}
       </div>
-      <DatasetFormSection />
-      <DataServiceFormSection />
+      <DatasetFormSection categories={categories} accessLevels={accessLevels} />
+      <DataServiceFormSection accessLevels={accessLevels} />
     </div>
   );
 };

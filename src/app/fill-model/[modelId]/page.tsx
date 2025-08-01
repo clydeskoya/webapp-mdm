@@ -17,6 +17,9 @@ export default function FillModelPage() {
   const modelId = params.modelId as string;
   const [dataModel, setDataModel] = useState<any>(null);
   const [popup, setPopup] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [existingCatalogues, setExistingCatalogues] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [accessLevels, setAccessLevels] = useState<any[]>([]);
 
 
   const methods = useForm<FormValues>({
@@ -47,6 +50,54 @@ export default function FillModelPage() {
       }
     }
     fetchModel();
+
+    async function fetchExistingCatalogues() {
+      if (modelId) {
+        try {
+          const response = await modelsAPI.listDataClasses(modelId);
+          const catalogues = response.items.filter((item: any) => item.label.startsWith('Catálogo'));
+          setExistingCatalogues(catalogues);
+        } catch (error) {
+          console.error('Failed to fetch existing catalogues:', error);
+        }
+      }
+    }
+    fetchExistingCatalogues();
+
+    async function fetchCategories() {
+      if (modelId) {
+        try {
+          const dataTypes = await modelsAPI.getDataTypesFromModel(modelId);
+          console.log('All data types:', dataTypes.items);
+          const categoryDataType = dataTypes.items.find((dt: any) => dt.label === 'Categoria');
+          console.log('Found Category data type:', categoryDataType);
+          if (categoryDataType && categoryDataType.enumerationValues) {
+            console.log('Setting categories:', categoryDataType.enumerationValues);
+            setCategories(categoryDataType.enumerationValues);
+          } else {
+            console.log('Category data type not found or has no enumerationValues.');
+          }
+        } catch (error) {
+          console.error('Failed to fetch categories:', error);
+        }
+      }
+    }
+    fetchCategories();
+
+    async function fetchAccessLevels() {
+      if (modelId) {
+        try {
+          const dataTypes = await modelsAPI.getDataTypesFromModel(modelId);
+          const accessDataType = dataTypes.items.find((dt: any) => dt.label === 'Níveis_Acesso');
+          if (accessDataType) {
+            setAccessLevels(accessDataType.enumerationValues);
+          }
+        } catch (error) {
+          console.error('Failed to fetch access levels:', error);
+        }
+      }
+    }
+    fetchAccessLevels();
   }, [modelId]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -218,8 +269,8 @@ export default function FillModelPage() {
             for (const distribution of dataset.distributions) {
               //console.log("Creating dataset with title:", dataset.title);
               const distributionIteration = await modelsAPI.createChildDataClass(modelId, datasetIteration.id, {
-                label: `Distribution - ${dataset.simple_title}.${distribution.format}`,
-                description: `Distribuição do dataset ${dataset.simple_title} em formato ${distribution.format}`,
+                label: `Distribution - ${dataset.simple_title}.${distribution.format.toLowerCase()}`,
+                description: `Distribuição do dataset ${dataset.simple_title} em formato ${distribution.format.toLowerCase()}`,
                 minMultiplicity: 1,
                 maxMultiplicity: -1,
               });
@@ -397,11 +448,19 @@ export default function FillModelPage() {
         <header className={styles.header}>
           <h1 className={styles.title}>Preencher Modelo: {dataModel.label}</h1>
           <p className={styles.subtitle}>Adicione um catálogo ao seu modelo de dados.</p>
+          {existingCatalogues.length > 0 && (
+            <p className={styles.existingCatalogues}>
+              {existingCatalogues.length === 1
+                ? 'Neste modelo já existe o catálogo: '
+                : 'Neste modelo já existem os seguintes catálogos: '}
+              {existingCatalogues.map((c: any) => c.label.slice(11)).join(', ')}
+            </p>
+          )}
         </header>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className={styles.form}>
-            <CatalogueFormSection />
+            <CatalogueFormSection categories={categories} accessLevels={accessLevels} />
 
             <div className={styles.formActions}>
               <button type="submit" className={styles.submitButton}>

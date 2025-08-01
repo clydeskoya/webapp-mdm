@@ -6,7 +6,12 @@ import { FormValues } from '@/lib/types';
 // import { AgentFormSection } from './AgentFormSection'; 
 // import { RecursoLegalFormSection } from './RecursoLegalFormSection';
 
-export const DataServiceFormSection: React.FC = () => {
+interface DataServiceFormSectionProps {
+  accessLevels: any[];
+}
+
+export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ accessLevels }) => {
+  console.log('Access levels in DataServiceFormSection:', accessLevels);
   const { control, register } = useFormContext<FormValues>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -53,11 +58,17 @@ export const DataServiceFormSection: React.FC = () => {
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Acesso</label>
-            <input
+            <select
               {...register(`catalogue.dataservices.${index}.access`)}
               className={styles.input}
-              placeholder="e.g., public"
-            />
+            >
+              <option value="">Selecione um nível de acesso</option>
+              {accessLevels.map((level: any, index: number) => (
+                <option key={index} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Formato</label>

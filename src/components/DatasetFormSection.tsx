@@ -4,7 +4,14 @@ import styles from '@/app/submit/submit.module.css';
 import { FormValues } from '@/lib/types';
 import { DistributionFormSection } from '@/components/DistributionFormSection';
 
-export const DatasetFormSection: React.FC = () => {
+interface DatasetFormSectionProps {
+  categories: any[];
+  accessLevels: any[];
+}
+
+export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categories, accessLevels }) => {
+  console.log('Categories in DatasetFormSection:', categories);
+  console.log('Access levels in DatasetFormSection:', accessLevels);
   const { control, register } = useFormContext<FormValues>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -35,19 +42,31 @@ export const DatasetFormSection: React.FC = () => {
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Acesso</label>
-            <input
+            <select
               {...register(`catalogue.datasets.${index}.access`)}
               className={styles.input}
-              placeholder="e.g., public"
-            />
+            >
+              <option value="">Selecione um nível de acesso</option>
+              {accessLevels.map((level: any) => (
+                <option key={level.id} value={level.value}>
+                  {level.value}
+                </option>
+              ))}
+            </select>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Categoria</label>
-            <input
+            <select
               {...register(`catalogue.datasets.${index}.category`)}
               className={styles.input}
-              placeholder="e.g., Demographics"
-            />
+            >
+              <option value="">Selecione uma categoria</option>
+              {categories.map((category: any) => (
+                <option key={category.id} value={category.value}>
+                  {category.value}
+                </option>
+              ))}
+            </select>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Versão</label>
@@ -69,11 +88,17 @@ export const DatasetFormSection: React.FC = () => {
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Idioma</label>
-            <input
+            <select
               {...register(`catalogue.datasets.${index}.language`)}
               className={styles.input}
-              placeholder="e.g., pt"
-            />
+            >
+              <option value="">Selecione um idioma</option>
+              <option value="PT">PT</option>
+              <option value="EN">EN</option>
+              <option value="ES">ES</option>
+              <option value="FR">FR</option>
+              <option value="IT">IT</option>
+            </select>
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Tags (separadas por vírgula)</label>
