@@ -28,7 +28,7 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
             <input
               {...register(`catalogue.datasets.${index}.title`)}
               className={styles.input}
-              placeholder="e.g., My Dataset"
+              placeholder="ex. My Dataset"
             />
           </div>
           <div className={styles.formGroup}>
@@ -36,7 +36,7 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
             <textarea
               {...register(`catalogue.datasets.${index}.description`)}
               className={styles.input}
-              placeholder="e.g., A description of my dataset."
+              placeholder="ex. A description of my dataset."
               rows={4}
             />
           </div>
@@ -75,14 +75,14 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
               step="any"
               {...register(`catalogue.datasets.${index}.version`, { valueAsNumber: true })}
               className={styles.input}
-              placeholder="e.g., 1.0"
+              placeholder="ex. 1.0"
             />
           </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>Data de Modificação</label>
             <input
               type="date"
-              {...register(`catalogue.datasets.${index}.modified_date`, { valueAsDate: true })}
+              {...register(`catalogue.datasets.${index}.modified_date`)}
               className={styles.input}
             />
           </div>
@@ -114,7 +114,7 @@ export const DatasetFormSection: React.FC<DatasetFormSectionProps> = ({ categori
                     field.onChange(tags);
                   }}
                   className={styles.input}
-                  placeholder="e.g., tag1, tag2"
+                  placeholder="ex. tag1, tag2"
                 />
               )}
             />

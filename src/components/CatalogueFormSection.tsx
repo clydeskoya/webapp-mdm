@@ -24,7 +24,7 @@ export const CatalogueFormSection: React.FC<CatalogueFormSectionProps> = ({ cate
           id="catalogue.title"
           {...register('catalogue.title', { required: 'O título é obrigatório' })}
           className={styles.input}
-          placeholder="e.g., Catálogo de Dados Abertos da AMA"
+          placeholder="ex. Catálogo de Dados Abertos da AMA"
         />
         {errors.catalogue?.title && <p className={styles.errorMessage}>{errors.catalogue.title.message}</p>}
       </div>
@@ -79,7 +79,7 @@ export const CatalogueFormSection: React.FC<CatalogueFormSectionProps> = ({ cate
           id="catalogue.homepage"
           {...register('catalogue.homepage', { required: 'A página principal é obrigatória' })}
           className={styles.input}
-          placeholder="e.g., https://dados.gov.pt"
+          placeholder="ex. https://dados.gov.pt"
         />
         {errors.catalogue?.homepage && <p className={styles.errorMessage}>{errors.catalogue.homepage.message}</p>}
       </div>
@@ -91,7 +91,7 @@ export const CatalogueFormSection: React.FC<CatalogueFormSectionProps> = ({ cate
           id="catalogue.owner"
           {...register('catalogue.owner', { required: 'O proprietário é obrigatório' })}
           className={styles.input}
-          placeholder="e.g., Agência para a Modernização Administrativa"
+          placeholder="ex. Agência para a Modernização Administrativa"
         />
         {errors.catalogue?.owner && <p className={styles.errorMessage}>{errors.catalogue.owner.message}</p>}
       </div>

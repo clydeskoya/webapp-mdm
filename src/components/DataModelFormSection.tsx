@@ -21,7 +21,7 @@ export const DataModelFormSection: React.FC = () => {
           id="label"
           {...register('dataModel.label', { required: 'Identifique a Entidade Pública' })}
           className={styles.input}
-          placeholder="e.g., AMA"
+          placeholder="ex. AMA"
         />
         {labelError && <p className={styles.errorMessage}>{labelError.message}</p>}
       </div>

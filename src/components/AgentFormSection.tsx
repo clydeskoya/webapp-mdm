@@ -25,7 +25,7 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({ recursoLegal
             <input
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.name`)}
               className={styles.input}
-              placeholder="e.g., My Agent"
+              placeholder="ex. AMA"
             />
           </div>
           <div className={styles.formGroup}>
@@ -33,7 +33,7 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({ recursoLegal
             <textarea
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.description`)}
               className={styles.input}
-              placeholder="e.g., A description of my agent."
+              placeholder="ex. A description of my agent."
               rows={4}
             />
           </div>
@@ -42,7 +42,7 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({ recursoLegal
             <input
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.url`)}
               className={styles.input}
-              placeholder="e.g., https://example.com/agent"
+              placeholder="ex. https://example.com/agent"
             />
           </div>
           <div className={styles.formGroup}>
@@ -50,7 +50,7 @@ export const AgentFormSection: React.FC<AgentFormSectionProps> = ({ recursoLegal
             <input
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${index}.id`)}
               className={styles.input}
-              placeholder="e.g., agent-001"
+              placeholder="ex. agent-001"
             />
           </div>
           <ContactFormSection recursoLegalIndex={recursoLegalIndex} agentIndex={index} />

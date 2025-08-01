@@ -28,7 +28,7 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
             <input
               {...register(`catalogue.dataservices.${index}.title`)}
               className={styles.input}
-              placeholder="e.g., My Data Service"
+              placeholder="ex. My Data Service"
             />
           </div>
           <div className={styles.formGroup}>
@@ -36,7 +36,7 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
             <input
               {...register(`catalogue.dataservices.${index}.endpoint_url`)}
               className={styles.input}
-              placeholder="e.g., https://api.example.com/data"
+              placeholder="ex. https://api.example.com/data"
             />
           </div>
           <div className={styles.formGroup}>
@@ -44,7 +44,7 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
             <input
               {...register(`catalogue.dataservices.${index}.license`)}
               className={styles.input}
-              placeholder="e.g., CC-BY-4.0"
+              placeholder="ex. CC-BY-4.0"
             />
           </div>
           <div className={styles.formGroup}>
@@ -52,7 +52,7 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
             <textarea
               {...register(`catalogue.dataservices.${index}.description`)}
               className={styles.input}
-              placeholder="e.g., A description of my data service."
+              placeholder="ex. A description of my data service."
               rows={4}
             />
           </div>
@@ -63,9 +63,9 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
               className={styles.input}
             >
               <option value="">Selecione um nível de acesso</option>
-              {accessLevels.map((level: any, index: number) => (
-                <option key={index} value={level}>
-                  {level}
+              {accessLevels.map((level: any) => (
+                <option key={level.id} value={level.value}>
+                  {level.value}
                 </option>
               ))}
             </select>
@@ -75,7 +75,7 @@ export const DataServiceFormSection: React.FC<DataServiceFormSectionProps> = ({ 
             <input
               {...register(`catalogue.dataservices.${index}.format`)}
               className={styles.input}
-              placeholder="e.g., JSON-LD"
+              placeholder="ex. JSON-LD"
             />
           </div>
           

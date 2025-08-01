@@ -25,7 +25,7 @@ export const ContactFormSection: React.FC<ContactFormSectionProps> = ({ recursoL
             <input
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${agentIndex}.contacts.${index}.mail`)}
               className={styles.input}
-              placeholder="e.g., contact@example.com"
+              placeholder="ex. contact@example.com"
             />
           </div>
           <div className={styles.formGroup}>
@@ -33,7 +33,7 @@ export const ContactFormSection: React.FC<ContactFormSectionProps> = ({ recursoL
             <input
               {...register(`recursosLegais.${recursoLegalIndex}.agents.${agentIndex}.contacts.${index}.phone`)}
               className={styles.input}
-              placeholder="e.g., 123-456-7890"
+              placeholder="ex. 123-456-7890"
             />
           </div>
           <button type="button" onClick={() => remove(index)} className={styles.removeButton}>

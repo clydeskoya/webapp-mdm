@@ -20,7 +20,7 @@ export type RecursoLegal = {
 export type Distribution = {
   license: string;
   format: string;
-  modified: Date;
+  modified: string;
   created: Date;
   accessURL: string;
   downloadURL: string;

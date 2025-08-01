@@ -24,7 +24,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <input
               {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.license`)}
               className={styles.input}
-              placeholder="e.g., MIT"
+              placeholder="ex. MIT"
             />
           </div>
           <div className={styles.formGroup}>
@@ -32,7 +32,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <input
               {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.format`)}
               className={styles.input}
-              placeholder="e.g., CSV"
+              placeholder="ex. CSV"
             />
           </div>
           <div className={styles.formGroup}>
@@ -56,7 +56,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <input
               {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.accessURL`)}
               className={styles.input}
-              placeholder="e.g., https://example.com/access"
+              placeholder="ex. https://example.com/access"
             />
           </div>
           <div className={styles.formGroup}>
@@ -64,7 +64,7 @@ export const DistributionFormSection: React.FC<DistributionFormSectionProps> = (
             <input
               {...register(`catalogue.datasets.${datasetIndex}.distributions.${index}.downloadURL`)}
               className={styles.input}
-              placeholder="e.g., https://example.com/download"
+              placeholder="ex. https://example.com/download"
             />
           </div>
           <button type="button" onClick={() => remove(index)} className={styles.removeButton}>

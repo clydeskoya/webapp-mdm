@@ -200,7 +200,7 @@ export default function FillModelPage() {
             label: dataset.title,
             description: dataset.description,
             minMultiplicity: 1,
-            maxMultiplicity: -1,
+            maxMultiplicity: 1,
           });
 
           // Add data elements to the dataset's data class
@@ -285,13 +285,6 @@ export default function FillModelPage() {
                 });
               }
               if (textDataType) {
-                await modelsAPI.createDataElement(modelId, distributionIteration.id, {
-                  label: 'URL de Acesso',
-                  maxMultiplicity: '1',
-                  minMultiplicity: '1',
-                  dataType: textDataType.id,
-                  description: distribution.accessURL,
-                });
                 await modelsAPI.createDataElement(modelId, distributionIteration.id, {
                   label: 'URL de Download',
                   maxMultiplicity: '1',
