@@ -88,7 +88,20 @@ export const modelsAPI = {
     return response.data;
   },
 
-  
+  listChildDataClasses: async (modelId: string, parentDataClassId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses`);
+    return response.data;
+  },
+
+  getDataClassById: async (modelId: string, dataClassId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/dataClasses/${dataClassId}`);
+    return response.data;
+  },
+
+  getNestedDataClassById: async (modelId: string, parentDataClassId: string, dataClassId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses/${dataClassId}`);
+    return response.data;
+  },
 
   createDataClass: async (modelId: string, data: { label: string; description: string; minMultiplicity: number; maxMultiplicity: number }) => {
     const response = await api.post(`/dataModels/${modelId}/dataClasses`, data);
@@ -102,6 +115,11 @@ export const modelsAPI = {
 
   createDataElement: async (modelId: string, dataClassId: string, data: { label: string; maxMultiplicity: string; minMultiplicity: string; dataType: string; description: string; }) => {
     const response = await api.post(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements`, data);
+    return response.data;
+  },
+
+  updateDataElement: async (modelId: string, dataClassId: string, dataElementId: string, data: { label: string; description: string; }) => {
+    const response = await api.put(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements/${dataElementId}`, data);
     return response.data;
   },
 

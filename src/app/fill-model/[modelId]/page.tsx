@@ -426,6 +426,10 @@ export default function FillModelPage() {
     router.push('/menu');
   };
 
+  const handleEditCatalogue = (catalogueId: string) => {
+    router.push(`/edit-catalogue/${modelId}/${catalogueId}`);
+  };
+
   if (!dataModel) {
     return <div>Loading...</div>;
   }
@@ -442,12 +446,22 @@ export default function FillModelPage() {
           <h1 className={styles.title}>Preencher Modelo: {dataModel.label}</h1>
           <p className={styles.subtitle}>Adicione um catálogo ao seu modelo de dados.</p>
           {existingCatalogues.length > 0 && (
-            <p className={styles.existingCatalogues}>
-              {existingCatalogues.length === 1
-                ? 'Neste modelo já existe o catálogo: '
-                : 'Neste modelo já existem os seguintes catálogos: '}
-              {existingCatalogues.map((c: any) => c.label.slice(11)).join(', ')}
-            </p>
+            <div className={styles.existingCatalogues}>
+              <span>
+                {existingCatalogues.length === 1
+                  ? 'Neste modelo já existe o catálogo: '
+                  : 'Neste modelo já existem os seguintes catálogos: '}
+              </span>
+              {existingCatalogues.map((c: any, index: number) => (
+                <span key={c.id}>
+                  {c.label.slice(11)}
+                  <button onClick={() => handleEditCatalogue(c.id)} className={styles.editLink}>
+                    Editar
+                  </button>
+                  {index < existingCatalogues.length - 1 && ', '}
+                </span>
+              ))}
+            </div>
           )}
         </header>
 

@@ -149,6 +149,25 @@ export default function MenuPage() {
               </div>
             </div>
 
+            {/* Instructions Card */}
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>Instruções</h2>
+              <div className={styles.instructions}>
+                <div className={styles.instructionItem}>
+                  <h3>1 - Submeter Novo Modelo de Dados</h3>
+                  <p>Use esta opção para criar um novo modelo de dados a partir de um ficheiro DCAT-AP.pt. Será guiado através do processo de submissão.</p>
+                </div>
+                <div className={styles.instructionItem}>
+                  <h3>2 - Editar Modelos de Dados Existentes</h3>
+                  <p>Selecione um modelo de dados da sua organização para ver, editar ou adicionar novos recursos, como catálogos, conjuntos de dados ou serviços de dados.</p>
+                </div>
+                <div className={styles.instructionItem}>
+                  <h3>3 - Editar Esquemas de Conjuntos de Dados</h3>
+                  <p>Esta funcionalidade permite-lhe definir ou alterar a estrutura (esquema) de um conjunto de dados, especificando os campos, tipos de dados e descrições.</p>
+                </div>
+              </div>
+            </div>
+
             {/* Recent Catalogs, Datasets, and Data Models */}
             <div className={styles.card}>
               <div className={styles.submissionsHeader}>

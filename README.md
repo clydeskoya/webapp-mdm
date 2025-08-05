@@ -58,18 +58,26 @@ npm run dev
 
 ```
 src/
-├── app/                    # App Router do Next.js
-│   ├── login/             # Página de login
-│   ├── menu/              # Menu principal
-│   ├── submit/            # Formulário de submissão
-│   ├── layout.tsx         # Layout principal
-│   └── page.tsx           # Página inicial (redirecionamento)
-├── components/            # Componentes reutilizáveis
-│   └── ProtectedRoute.tsx # Componente de rota protegida
-├── lib/                   # Utilitários e configurações
-│   ├── api.ts            # Cliente API para Mauro Data Mapper
-│   └── auth-store.ts     # Store de autenticação (Zustand)
-└── styles/               # Estilos globais
+├── app/                       # App Router do Next.js
+│   ├── login/                # Página de login
+│   ├── menu/                 # Menu principal
+│   ├── submit/               # Formulário de submissão
+│   ├── edit-catalogue/       # Página de edição de catálogos
+│   ├── edit-dataset-schema/  # Página de edição de esquemas de datasets
+│   ├── fill-model/           # Página de preenchimento de modelos
+│   ├── layout.tsx            # Layout principal
+│   └── page.tsx              # Página inicial (redirecionamento)
+├── components/               # Componentes reutilizáveis
+│   ├── ProtectedRoute.tsx    # Componente de rota protegida
+│   ├── AgentFormSection.tsx  # Seção de formulário para Agentes
+│   ├── CatalogueFormSection.tsx # Seção de formulário para Catálogos
+│   ├── ... (outros componentes de formulário)
+├── lib/                      # Utilitários e configurações
+│   ├── api.ts               # Cliente API para Mauro Data Mapper
+│   ├── auth-store.ts        # Store de autenticação (Zustand)
+│   ├── dcat-template.ts     # Template de metadados DCAT
+│   └── types.ts             # Tipos de dados
+└── styles/                  # Estilos globais
 ```
 
 ## Configuração da API
@@ -81,16 +89,24 @@ A aplicação está configurada para conectar ao Mauro Data Mapper através dos 
 - `POST /api/v1/auth/logout` - Logout
 - `GET /api/v1/auth/me` - Informações do utilizador atual
 
-### Submissões
-- `GET /api/v1/submissions/recent` - Submissões recentes
-- `POST /api/v1/submissions` - Criar nova submissão
-- `GET /api/v1/submissions/:id` - Obter submissão específica
-- `PUT /api/v1/submissions/:id` - Atualizar submissão
-- `DELETE /api/v1/submissions/:id` - Eliminar submissão
+
 
 ### Modelos de Dados
-- `GET /api/v1/dataModels` - Listar modelos de dados
-- `GET /api/v1/dataModels/:id` - Obter modelo específico
+- `GET /dataModels` - Listar todos os modelos de dados
+- `GET /folders/:folderId/dataModels` - Listar modelos de dados de uma pasta
+- `GET /dataModels/:id` - Obter modelo de dados específico
+- `POST /folders/:folderId/dataModels` - Criar novo modelo de dados
+
+### Classes de Dados e Elementos
+- `GET /dataModels/:modelId/allDataClasses` - Listar todas as classes de dados de um modelo
+- `GET /dataModels/:modelId/dataClasses/:parentDataClassId/dataClasses` - Listar classes de dados filhas
+- `GET /dataModels/:modelId/dataClasses/:dataClassId` - Obter classe de dados específica
+- `POST /dataModels/:modelId/dataClasses` - Criar nova classe de dados
+- `POST /dataModels/:modelId/dataClasses/:parentDataClassId/dataClasses` - Criar classe de dados filha
+- `POST /dataModels/:modelId/dataTypes/:otherModelId/:dataTypeId` - Adicionar tipo de dados a um modelo
+- `POST /dataModels/:modelId/dataClasses/:dataClassId/dataElements` - Criar novo elemento de dados
+- `PUT /dataModels/:modelId/dataClasses/:dataClassId/dataElements/:dataElementId` - Atualizar elemento de dados
+- `GET /dataModels/:modelId/dataTypes` - Listar tipos de dados de um modelo
 
 ## Utilização
 
