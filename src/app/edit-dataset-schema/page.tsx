@@ -92,8 +92,9 @@ export default function EditDatasetSchemaPage() {
 
           if (schemaDataClass) {
             setSchemaDataClassId(schemaDataClass.id);
-            const response = await modelsAPI.getDataClassById(selectedDataModel, schemaDataClass.id);
-            const existingSchema = response.dataElements || [];
+            // Use the new listDataElements function to get the schema's fields
+            const response = await modelsAPI.listDataElements(selectedDataModel, schemaDataClass.id);
+            const existingSchema = response.items || []; // The elements are in the 'items' property
             setSchema(existingSchema.length > 0 ? existingSchema : [defaultSchemaRow()]);
           } else {
             setSchema([defaultSchemaRow()]);
@@ -186,7 +187,7 @@ export default function EditDatasetSchemaPage() {
         };
 
         if (element.id) {
-          // TODO: Handle update for existing elements
+          await modelsAPI.updateDataElement(selectedDataModel, currentSchemaId, element.id, payload);
         } else {
           await modelsAPI.createDataElement(selectedDataModel, currentSchemaId, payload);
         }
@@ -194,15 +195,26 @@ export default function EditDatasetSchemaPage() {
 
       setPopup({ message: 'Esquema atualizado com sucesso!', type: 'success' });
 
-      // Refetch the schema to get the latest state with new IDs
-      const response = await modelsAPI.getDataClassById(selectedDataModel, currentSchemaId);
-      const existingSchemaElements = response.dataElements || [];
-      setSchema(existingSchemaElements.length > 0 ? existingSchemaElements : [defaultSchemaRow()]);
+      // Try to refetch the schema to get the latest state with new IDs.
+      // If this fails, we log the error but don't show an error popup to the user,
+      // as the submission itself was successful.
+      try {
+        const response = await modelsAPI.getDataClassById(selectedDataModel, currentSchemaId);
+        const existingSchemaElements = response.dataElements || [];
+        setSchema(existingSchemaElements.length > 0 ? existingSchemaElements : [defaultSchemaRow()]);
+      } catch (refetchError: any) {
+        console.error('Failed to refetch schema after update, but submission was successful:', refetchError);
+      }
 
     } catch (error: any) {
-      const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message || 'An unknown error occurred.';
-      console.error('Failed to update schema:', errorMessage);
-      setPopup({ message: `Falha ao atualizar o esquema: ${errorMessage}`, type: 'error' });
+      const rawErrorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message || 'An unknown error occurred.';
+      console.error('Failed to update schema:', rawErrorMessage);
+
+      if (rawErrorMessage.includes('Property [label]') && rawErrorMessage.includes('must be unique')) {
+        setPopup({ message: 'Um elemento com o mesmo nome já pertence ao schema', type: 'error' });
+      } else {
+        setPopup({ message: `Falha ao atualizar o esquema: ${rawErrorMessage}`, type: 'error' });
+      }
     }
   };
 

@@ -89,7 +89,12 @@ export const modelsAPI = {
   },
 
   listChildDataClasses: async (modelId: string, parentDataClassId: string) => {
-    const response = await api.get(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses`);
+    const response = await api.get(`/dataModels/${modelId}/dataClasses/${parentDataClassId}/dataClasses`, {
+      params: {
+        // Add a cache-busting parameter
+        _t: new Date().getTime(),
+      },
+    });
     return response.data;
   },
 
@@ -113,13 +118,23 @@ export const modelsAPI = {
     return response.data;
   },
 
+  listDataElements: async (modelId: string, dataClassId: string) => {
+    const response = await api.get(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements`);
+    return response.data;
+  },
+
   createDataElement: async (modelId: string, dataClassId: string, data: { label: string; maxMultiplicity: string; minMultiplicity: string; dataType: string; description: string; }) => {
     const response = await api.post(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements`, data);
     return response.data;
   },
 
-  updateDataElement: async (modelId: string, dataClassId: string, dataElementId: string, data: { label: string; description: string; }) => {
-    const response = await api.put(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements/${dataElementId}`, data);
+  updateDataElement: async (modelId: string, dataClassId: string, dataElementId: string, data: { label: string; description: string; dataType: { id: string; }; }) => {
+    const payload = {
+      label: data.label,
+      description: data.description,
+      dataType: data.dataType.id,
+    };
+    const response = await api.put(`/dataModels/${modelId}/dataClasses/${dataClassId}/dataElements/${dataElementId}`, payload);
     return response.data;
   },
 

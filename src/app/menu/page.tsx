@@ -14,6 +14,8 @@ export default function MenuPage() {
   const [dataModels, setDataModels] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>('');
+  const [metadata, setMetadata] = useState<any>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     async function fetchDataModels() {
@@ -70,6 +72,35 @@ export default function MenuPage() {
   const handleConfirmEdit = () => {
     if (selectedModel) {
       router.push(`/fill-model/${selectedModel}`);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleExtractMetadata = async () => {
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('/api/metadata-extractor', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMetadata(data);
+      } else {
+        console.error('Failed to extract metadata');
+      }
+    } catch (error) {
+      console.error('An error occurred while extracting metadata:', error);
     }
   };
 
@@ -166,6 +197,22 @@ export default function MenuPage() {
                   <p>Esta funcionalidade permite-lhe definir ou alterar a estrutura (esquema) de um conjunto de dados, especificando os campos, tipos de dados e descrições.</p>
                 </div>
               </div>
+            </div>
+
+            {/* Metadata Extractor Card */}
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>Extrator de Metadados</h2>
+              <div className={styles.fileInputContainer}>
+                <input type="file" accept=".csv,.xml,.json" onChange={handleFileChange} className={styles.fileInput} />
+                <button onClick={handleExtractMetadata} className={styles.extractButton} disabled={!selectedFile}>
+                  Extrair Metadados
+                </button>
+              </div>
+              {metadata && (
+                <pre className={styles.metadataContent}>
+                  {JSON.stringify(metadata, null, 2)}
+                </pre>
+              )}
             </div>
 
             {/* Recent Catalogs, Datasets, and Data Models */}
